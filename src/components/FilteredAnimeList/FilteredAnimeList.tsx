@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import './FilteredAnimeList.css';
-import Button from "../../shared/components/ui/Button/Button.tsx";
-import FlexRow from "../../shared/components/ui/FlexRow/FlexRow.tsx";
 
 export interface Anime {
     id: string;
@@ -36,38 +34,19 @@ export default function FilteredAnimeList({ items }: FilteredAnimeListProps) {
 
     return (
         <div className="anime-list-container">
-            <div>
-                <h3 className="status-filter-title">Статус Аніме</h3>
-                <FlexRow gap="0.5rem" margin="0 0 1rem 0">
+            <div className="filter-wrapper" style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <h3 className="status-filter-title">Статус Аніме:</h3>
 
-                    <Button
-                        variant={statusFilter === 'all' ? 'primary' : 'tertiary'}
-                        onClick={() => setStatusFilter('all')}
-                    >
-                        Всі
-                    </Button>
-
-                    <Button
-                        variant={statusFilter === 'finished' ? 'primary' : 'tertiary'}
-                        onClick={() => setStatusFilter('finished')}
-                    >
-                        Завершені
-                    </Button>
-
-                    <Button
-                        variant={statusFilter === 'current' ? 'primary' : 'tertiary'}
-                        onClick={() => setStatusFilter('current')}
-                    >
-                        Онгоінг
-                    </Button>
-
-                    <Button
-                        variant={statusFilter === 'upcoming' ? 'primary' : 'tertiary'}
-                        onClick={() => setStatusFilter('upcoming')}
-                    >
-                        Анонсовані
-                    </Button>
-                </FlexRow>
+                <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="status-dropdown"
+                >
+                    <option value="all">Всі</option>
+                    <option value="finished">Завершені</option>
+                    <option value="current">Онгоінг</option>
+                    <option value="upcoming">Анонсовані</option>
+                </select>
             </div>
 
             <ul className="anime-grid">

@@ -16,9 +16,9 @@ export default function KpiCard({ title, value, change, isPositive }: KpiCardPro
                 <span className="kpi-value">{value}</span>
 
                 {change && (
-                    <span className={`kpi-change ${isPositive ? 'positive' : 'negative'}`}>
-            {change}
-          </span>
+                 <span className={`kpi-change ${isPositive ? 'positive' : 'negative'}`}>
+                    {change}
+                 </span>
                 )}
             </div>
         </div>
