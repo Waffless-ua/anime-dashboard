@@ -34,7 +34,7 @@ export default function FilteredAnimeList({ items }: FilteredAnimeListProps) {
 
     return (
         <div className="anime-list-container">
-            <div className="filter-wrapper" style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div className="filter-wrapper">
                 <h3 className="status-filter-title">Статус Аніме:</h3>
 
                 <select
