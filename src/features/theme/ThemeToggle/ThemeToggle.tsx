@@ -1,23 +1,15 @@
-import { useState, useEffect } from 'react';
-import Button from '../../../shared/components/ui/Button/Button.tsx';
+import Button from '../../../shared/components/ui/Button/Button';
 
-export default function ThemeToggle() {
-    const [isDark, setIsDark] = useState(() => {
-        return document.documentElement.getAttribute('data-theme') === 'dark';
-    });
+interface ThemeToggleProps {
+    isDark: boolean;
+    onToggle: () => void;
+}
 
-    useEffect(() => {
-        if (isDark) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        } else {
-            document.documentElement.removeAttribute('data-theme');
-        }
-    }, [isDark]);
-
+export default function ThemeToggle({ isDark, onToggle }: ThemeToggleProps) {
     return (
         <Button
             variant="secondary"
-            onClick={() => setIsDark(!isDark)}
+            onClick={onToggle}
         >
             {isDark ? '🌙' : '☀️'}
         </Button>
