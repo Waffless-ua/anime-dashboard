@@ -1,9 +1,9 @@
 import './App.css';
-import FilteredAnimeList from '../components/FilteredAnimeList/FilteredAnimeList';
-import KpiCard from '../components/KpiCard/KpiCard';
-import ThemeToggle from "../components/ThemeToggle/ThemeToggle.tsx";
-import { mockAnimeList, mockStats } from '../api/mockAnimeData';
-import Counter from "../components/Counter/Counter.tsx";
+import FilteredAnimeList from '../features/anime/components/FilteredAnimeList/FilteredAnimeList';
+import KpiCard from '../shared/components/ui/KpiCard/KpiCard';
+import ThemeToggle from "../features/theme/ThemeToggle/ThemeToggle.tsx";
+import { mockAnimeList, mockStats } from '../features/anime/mock/mockAnimeData.ts';
+import Counter from "../shared/components/ui/Counter/Counter.tsx";
 
 function App() {
     return (

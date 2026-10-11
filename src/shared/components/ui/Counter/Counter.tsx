@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './Counter.css'
-import Button from "../../shared/components/ui/Button/Button.tsx";
+import Button from "../Button/Button.tsx";
 
 export default function Counter() {
     const [count, setCount] = useState(0);
