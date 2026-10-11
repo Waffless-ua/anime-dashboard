@@ -18,7 +18,7 @@ function App() {
                 <KpiCard
                     title="Всього аніме в базі"
                     value={mockStats.totalAnime}
-                    change="+120 за місяць"
+                    change="+120"
                     isPositive={true}
                 />
 
@@ -33,12 +33,15 @@ function App() {
                     change="-1.2%"
                     isPositive={false}
                 />
+
+                <Counter
+                    label="Переглянутих аніме"
+                    step={1}
+                    initial={0}
+                />
             </div>
 
             <FilteredAnimeList items={mockAnimeList} />
-
-
-            <Counter />
         </div>
     );
 }

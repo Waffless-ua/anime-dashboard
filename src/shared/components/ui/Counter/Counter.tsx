@@ -2,23 +2,29 @@ import { useState } from 'react';
 import './Counter.css'
 import Button from "../Button/Button.tsx";
 
-export default function Counter() {
-    const [count, setCount] = useState(0);
+interface CounterProps {
+    label: string;
+    initial?: number;
+    step?: number;
+}
+
+export default function Counter({ label, initial = 0, step = 1 }: CounterProps) {
+    const [count, setCount] = useState(initial);
 
     return (
         <div className="counter-widget">
-            <div className="counter-display">Лічильник: {count}</div>
+            <div className="counter-display">{label}: {count}</div>
 
             <div className="counter-button-list">
-                <Button variant="danger" onClick={() => setCount(count - 1)}>
+                <Button variant="danger" onClick={() => setCount(prev => prev - step)}>
                     −
                 </Button>
 
-                <Button variant="outline" onClick={() => setCount(0)}>
+                <Button variant="outline" onClick={() => setCount(initial)}>
                     Скинути
                 </Button>
 
-                <Button variant="primary" onClick={() => setCount(count + 1)}>
+                <Button variant="primary" onClick={() => setCount(prev => prev + step)}>
                     +
                 </Button>
             </div>
