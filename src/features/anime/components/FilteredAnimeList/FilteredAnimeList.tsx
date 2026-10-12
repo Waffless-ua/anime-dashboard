@@ -1,79 +1,75 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
+import type { ReactNode } from 'react';
+import type { Anime } from '../../types/anime.types';
+
 import './FilteredAnimeList.css';
 
-export interface Anime {
-    id: string;
-    attributes: {
-        canonicalTitle: string;
-        averageRating: string;
-        episodeCount: number;
-        status: string;
-        posterImage: {
-            small: string;
-        };
-    };
-}
+type FilterValue = string | number | boolean | null | undefined;
 
 interface FilteredAnimeListProps {
     items: Anime[];
+    getFilterValue: (anime: Anime) => FilterValue;
+    label?: string;
+    getOptionLabel?: (value: string) => string;
+    children: (filteredAnime: Anime[]) => ReactNode;
 }
 
-const statusTranslations: Record<string, string> = {
-    finished: 'Завершено',
-    current: 'Онгоінг',
-    upcoming: 'Анонсовано',
-};
+export default function FilteredAnimeList({
+          items,
+          getFilterValue,
+          label = 'Фільтр аніме:',
+          getOptionLabel = (value) => value,
+          children,
+}: FilteredAnimeListProps) {
+    const [selectedFilter, setSelectedFilter] = useState('');
+    const selectId = useId();
 
-export default function FilteredAnimeList({ items }: FilteredAnimeListProps) {
-    const [statusFilter, setStatusFilter] = useState<string>('all');
+    const options = [
+        ...new Set(items
+                .map(getFilterValue)
+                .filter(
+                    (value) => value !== null && value !== undefined
+                )
+                .map(String)
+                .filter((value) => value !== '')),
+    ].sort((a, b) =>
+        a.localeCompare(b, 'uk', { numeric: true })
+    );
+
+    const activeFilter = options.includes(selectedFilter) ? selectedFilter : '';
 
     const filteredAnime = items.filter((anime) => {
-        if (statusFilter === 'all') return true;
-        return anime.attributes.status === statusFilter;
+        if (activeFilter === '') return true;
+
+        return String(getFilterValue(anime)) === activeFilter;
     });
 
     return (
         <div className="anime-list-container">
             <div className="filter-wrapper">
-                <h3 className="status-filter-title">Статус Аніме:</h3>
+                <label htmlFor={selectId} className="status-filter-title">
+                    {label}
+                </label>
 
                 <select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
+                    id={selectId}
+                    value={activeFilter}
+                    onChange={(event) =>
+                        setSelectedFilter(event.target.value)
+                    }
                     className="status-dropdown"
                 >
-                    <option value="all">Всі</option>
-                    <option value="finished">Завершені</option>
-                    <option value="current">Онгоінг</option>
-                    <option value="upcoming">Анонсовані</option>
+                    <option value="">Всі</option>
+
+                    {options.map((option) => (
+                        <option key={option} value={option}>
+                            {getOptionLabel(option)}
+                        </option>
+                    ))}
                 </select>
             </div>
 
-            <ul className="anime-grid">
-                {filteredAnime.map((anime) => (
-                    <li key={anime.id} className="anime-card">
-                        <img
-                            src={anime.attributes.posterImage.small}
-                            alt={anime.attributes.canonicalTitle}
-                            className="anime-cover"
-                        />
-                        <h3 className="anime-title">{anime.attributes.canonicalTitle}</h3>
-
-                        <div className="anime-stats">
-                            <p>⭐ Рейтинг: {anime.attributes.averageRating}%</p>
-                            <p>🎬 Епізоди: {anime.attributes.episodeCount}</p>
-                            <p>📌 Статус: {statusTranslations[anime.attributes.status] || anime.attributes.status}</p>
-                        </div>
-                    </li>
-                ))}
-            </ul>
-
-            {filteredAnime.length === 0 && (
-                <div style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
-                    Аніме з таким статусом не знайдено.
-                </div>
-            )}
+            {children(filteredAnime)}
         </div>
     );
-
 }

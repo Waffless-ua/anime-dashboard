@@ -4,10 +4,11 @@ import KpiCard from '../shared/components/ui/KpiCard/KpiCard';
 import ThemeToggle from "../features/theme/ThemeToggle/ThemeToggle.tsx";
 import { mockAnimeList, mockStats } from '../features/anime/mock/mockAnimeData.ts';
 import Counter from "../shared/components/ui/Counter/Counter.tsx";
-import {useTheme} from "../features/theme/hooks/useTheme.ts";
+import { useTheme } from "../features/theme/hooks/useTheme.ts";
+import AnimeList from "../features/anime/components/AnimeList/AnimeList.tsx";
 
 function App() {
-    const { isDark, toggleTheme } = useTheme();
+    const {isDark, toggleTheme} = useTheme();
 
     return (
         <div className="app-theme" data-theme={isDark ? 'dark' : 'light'}>
@@ -48,7 +49,18 @@ function App() {
                     />
                 </div>
 
-                <FilteredAnimeList items={mockAnimeList} />
+                <FilteredAnimeList
+                    items={mockAnimeList}
+                    getFilterValue={(anime) => anime.attributes.status}
+                    label="Статус Аніме:"
+                >
+                    {(filteredAnime) => (
+                        <AnimeList
+                            animeList={filteredAnime}
+                            limit={8}
+                        />
+                    )}
+                </FilteredAnimeList>
             </div>
         </div>
     );
