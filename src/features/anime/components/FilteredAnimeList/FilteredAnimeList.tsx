@@ -20,25 +20,23 @@ export default function FilteredAnimeList({
           label = 'Фільтр аніме:',
           getOptionLabel = (value) => value,
           children,
-}: FilteredAnimeListProps) {
+}: FilteredAnimeListProps)  {
     const [selectedFilter, setSelectedFilter] = useState('');
-    const selectId = useId();
+    const selectId : string = useId();
 
-    const options = [
-        ...new Set(items
-                .map(getFilterValue)
-                .filter(
-                    (value) => value !== null && value !== undefined
-                )
-                .map(String)
-                .filter((value) => value !== '')),
-    ].sort((a, b) =>
-        a.localeCompare(b, 'uk', { numeric: true })
+    const filterValues : string[] = items
+        .map(getFilterValue)
+        .filter((value : FilterValue) => value != null)
+        .map(String)
+        .filter(Boolean);
+
+    const options : string[] = [...new Set(filterValues)].sort(
+        (a, b) => a.localeCompare(b, 'uk', { numeric: true })
     );
 
     const activeFilter = options.includes(selectedFilter) ? selectedFilter : '';
 
-    const filteredAnime = items.filter((anime) => {
+    const filteredAnime : Anime[] = items.filter((anime : Anime) => {
         if (activeFilter === '') return true;
 
         return String(getFilterValue(anime)) === activeFilter;

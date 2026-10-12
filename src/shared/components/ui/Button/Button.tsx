@@ -21,6 +21,7 @@ export default function Button({
             className={`shared-btn btn-${variant} ${className}`}
             onClick={onClick}
             disabled={disabled}
+            type="button"
         >
             {children}
         </button>

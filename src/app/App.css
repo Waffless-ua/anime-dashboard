@@ -31,13 +31,37 @@
 
 .kpi-section {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+
+  gap: 1.25rem;
   margin-bottom: 2rem;
+}
+
+.kpi-section > * {
+  min-width: 0;
 }
 
 .widgets-section {
   display: flex;
   gap: 1.5rem;
   margin-bottom: 2rem;
+}
+
+
+
+@media (max-width: 1000px) {
+  .kpi-section {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .kpi-section {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-layout {
+    padding: 1rem;
+  }
 }
