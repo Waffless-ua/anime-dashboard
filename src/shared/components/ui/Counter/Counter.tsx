@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import './Counter.css'
-import Button from "../Button/Button.tsx";
+import Button from '../Button/Button';
+
+import './Counter.css';
 
 interface CounterProps {
     label: string;
@@ -8,19 +9,29 @@ interface CounterProps {
     step?: number;
 }
 
-export default function Counter({ label, initial = 0, step = 1 }: CounterProps) {
+export default function Counter({
+    label,
+    initial = 0,
+    step = 1,
+}: CounterProps) {
     const [count, setCount] = useState(initial);
 
     return (
         <div className="counter-widget">
-            <div className="counter-display">{label}: {count}</div>
+            <h3 className="counter-label">
+                {label}
+            </h3>
+
+            <div className="counter-value" aria-live="polite">
+                {count}
+            </div>
 
             <div className="counter-button-list">
-                <Button variant="danger" onClick={() => setCount(prev => prev - step)}>
+                <Button variant="outline" onClick={() => setCount(prev => prev - step)}>
                     −
                 </Button>
 
-                <Button variant="outline" onClick={() => setCount(initial)}>
+                <Button variant="secondary" onClick={() => setCount(initial)}>
                     Скинути
                 </Button>
 

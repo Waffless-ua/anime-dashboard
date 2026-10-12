@@ -1,4 +1,5 @@
 import type { Anime } from '../../types/anime.types';
+import './AnimeList.css';
 
 interface AnimeListProps {
     animeList: Anime[];
@@ -13,20 +14,39 @@ export default function AnimeList({ animeList, limit }: AnimeListProps) {
             <ul className="anime-grid">
                 {visibleAnime.map((anime) => (
                     <li key={anime.id} className="anime-card">
-                        <img
-                            src={anime.attributes.posterImage.small}
-                            alt={anime.attributes.canonicalTitle}
-                            className="anime-cover"
-                        />
+                        {anime.attributes.posterImage?.small && (
+                            <img
+                                src={anime.attributes.posterImage.small}
+                                alt={anime.attributes.canonicalTitle}
+                                className="anime-cover"
+                                loading="lazy"
+                            />
+                        )}
 
                         <h3 className="anime-title">
                             {anime.attributes.canonicalTitle}
                         </h3>
 
                         <div className="anime-stats">
-                            <p>⭐ Рейтинг: {anime.attributes.averageRating}%</p>
-                            <p>🎬 Епізоди: {anime.attributes.episodeCount}</p>
-                            <p>📌 Статус: {anime.attributes.status}</p>
+                            <p>
+                                ⭐ Рейтинг:{' '}
+                                {anime.attributes.averageRating != null
+                                    ? `${anime.attributes.averageRating}%`
+                                    : 'Немає даних'}
+                            </p>
+
+                            <p>
+                                🎬 Епізоди:{' '}
+                                {anime.attributes.episodeCount ?? 'Невідомо'}
+                            </p>
+
+                            <p>
+                                📌 Статус: {anime.attributes.status || 'Невідомо'}
+                            </p>
+
+                            <p>
+                                📺 Тип: {anime.attributes.showType || 'Невідомо'}
+                            </p>
                         </div>
                     </li>
                 ))}
