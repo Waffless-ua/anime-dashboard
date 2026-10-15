@@ -40,8 +40,10 @@ export default function KpiCard({
 
     const hasChange =
         status === 'success' &&
+        (changeStatus === 'positive' || changeStatus === 'negative') &&
         change != null &&
-        change !== '';
+        change !== '' &&
+        change !== 0;
 
     return (
         <div className="kpi-card">

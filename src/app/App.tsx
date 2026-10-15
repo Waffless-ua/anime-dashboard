@@ -11,7 +11,7 @@ import { useAnime } from "../features/anime/hooks/useAnime.ts";
 
 export default function App() {
     const { isDark, toggleTheme } = useTheme();
-    const {list, topRated, mostPopular, anime, retry } = useAnime();
+    const { list, topRated, mostPopular, anime, retry, changes } = useAnime();
 
     return (
         <div className="app-theme" data-theme={isDark ? 'dark' : 'light'}>
@@ -27,33 +27,58 @@ export default function App() {
                     isEmpty={anime.length === 0}
                     onRetry={retry}
                 >
+
                     <div className="kpi-section">
                         <KpiCard
                             title="Аніме в базі"
+                            status={list.status}
                             value={list.data?.totalAnime}
-                            change="12"
-                            changePrefix="+"
-                            changeSuffix=" аніме в базі"
-                            changeStatus={"positive"}
+                            change={changes.totalAnime}
+                            changePrefix={
+                                changes.totalAnime !== null && changes.totalAnime > 0
+                                    ? '+'
+                                    : ''
+                            }
+                            changeSuffix=" аніме"
+                            changeStatus={
+                                changes.totalAnime === null || changes.totalAnime === 0
+                                    ? undefined
+                                    : changes.totalAnime > 0
+                                        ? 'positive'
+                                        : 'negative'
+                            }
                         />
 
                         <KpiCard
                             title="Найпопулярніше аніме"
                             status={mostPopular.status}
                             value={mostPopular.data?.attributes.canonicalTitle}
-                            change="28 в улюблених"
-                            changePrefix="+"
-                            changeStatus={"positive"}
+                            change={changes.mostPopular}
                         />
 
                         <KpiCard
                             title="Аніме з найвищим рейтингом"
                             status={topRated.status}
                             value={topRated.data?.attributes.canonicalTitle}
-                            change={topRated.data?.attributes.averageRating}
-                            changePrefix="Рейтинг: "
-                            changeSuffix="% (-0.76%)"
-                            changeStatus={"negative"}
+                            change={changes.topRated}
+                            changePrefix={
+                                typeof changes.topRated === 'number' &&
+                                changes.topRated > 0
+                                    ? '+'
+                                    : ''
+                            }
+                            changeSuffix={
+                                typeof changes.topRated === 'number'
+                                    ? ' п.п.'
+                                    : ''
+                            }
+                            changeStatus={
+                                typeof changes.topRated !== 'number' || changes.topRated === 0
+                                    ? undefined
+                                    : changes.topRated > 0
+                                        ? 'positive'
+                                        : 'negative'
+                            }
                         />
 
                         <Counter
@@ -62,6 +87,7 @@ export default function App() {
                             initial={0}
                         />
                     </div>
+
 
                     <FilteredAnimeList
                         items={anime}
