@@ -1,5 +1,6 @@
 import './KpiCard.css';
-import type { AsyncStatus } from "../../../types/async.types.ts";
+
+import type { AsyncStatus } from '../../../types/async.types';
 
 interface KpiCardProps {
     title: string;
@@ -7,7 +8,7 @@ interface KpiCardProps {
     change?: string | number | null;
     changePrefix?: string;
     changeSuffix?: string;
-    changeStatus?: 'positive' | 'negative';
+    changeStatus?: 'positive' | 'negative' | 'neutral';
     status?: AsyncStatus;
 }
 
@@ -17,12 +18,12 @@ export default function KpiCard({
     change,
     changePrefix = '',
     changeSuffix = '',
+    changeStatus = 'neutral',
     status = 'success',
-    changeStatus,
 }: KpiCardProps) {
     function getDisplayValue(): string {
         if (status === 'loading') {
-            return 'Завантаження...';
+            return 'Завантаження';
         }
 
         if (status === 'error') {
@@ -40,14 +41,15 @@ export default function KpiCard({
 
     const hasChange =
         status === 'success' &&
-        (changeStatus === 'positive' || changeStatus === 'negative') &&
         change != null &&
         change !== '' &&
         change !== 0;
 
     return (
         <div className="kpi-card">
-            <h3 className="kpi-title">{title}</h3>
+            <h3 className="kpi-title">
+                {title}
+            </h3>
 
             <div className="kpi-value-container">
                 <span className="kpi-value">
@@ -57,8 +59,10 @@ export default function KpiCard({
 
             {hasChange && (
                 <span className={`kpi-change ${changeStatus}`}>
-                {changePrefix}{change}{changeSuffix}
-            </span>
+                    {changePrefix}
+                    {change}
+                    {changeSuffix}
+                </span>
             )}
         </div>
     );

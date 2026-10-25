@@ -4,7 +4,6 @@
     font-weight: 600;
     font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -12,7 +11,11 @@
     font-family: inherit;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 
-    transition-duration: var(--theme-duration);
+    transition:
+            background-color var(--theme-duration, 0.3s) ease,
+            border-color var(--theme-duration, 0.3s) ease,
+            box-shadow 0.2s ease,
+            transform 0.2s ease;
 }
 
 .shared-btn:not(:disabled):hover {

@@ -1,6 +1,6 @@
-import type { Anime } from '../types/anime.types';
-import type { AnimeKpiSnapshot } from '../types/animeKpi.types';
-import getRatingAnime from './getRatingAnime';
+import type { Anime } from '../types/anime.types.ts';
+import type { AnimeKpiSnapshot } from '../types/animeKpi.types.ts';
+import getRatingAnime from '../utils/getRatingAnime.ts';
 
 export function createAnimeKpiSnapshot(
     totalAnime: number,

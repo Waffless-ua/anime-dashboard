@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import './AnimeDashboard.css';
 import type { AsyncStatus } from "../../../../shared/types/async.types.ts";
 
 interface AnimeDashboardProps {

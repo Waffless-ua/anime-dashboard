@@ -12,9 +12,6 @@
     padding: 0;
 
     list-style: none;
-
-    grid-column: 1 / -1;
-    grid-row: 2;
 }
 
 .anime-card {
@@ -104,11 +101,4 @@
 
 .anime-grid:empty {
     display: none;
-}
-
-@media (max-width: 760px) {
-    .anime-grid {
-        grid-column: 1;
-        grid-row: 3;
-    }
 }

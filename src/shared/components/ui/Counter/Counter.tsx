@@ -1,41 +1,60 @@
-import { useState } from 'react';
 import Button from '../Button/Button';
 
 import './Counter.css';
 
 interface CounterProps {
     label: string;
-    initial?: number;
+    value: number;
+    min: number;
+    max: number;
+    onChange: (value: number) => void;
     step?: number;
 }
 
 export default function Counter({
     label,
-    initial = 0,
+    value,
+    min,
+    max,
+    onChange,
     step = 1,
 }: CounterProps) {
-    const [count, setCount] = useState(initial);
+    function decrease() {
+        onChange(Math.max(min, value - step));
+    }
+
+    function increase() {
+        onChange(Math.min(max, value + step));
+    }
 
     return (
-        <div className="counter-widget">
-            <h3 className="counter-label">
+        <div
+            className="counter-widget"
+            role="group"
+            aria-label={label}
+        >
+            <span className="counter-label">
                 {label}
-            </h3>
-
-            <div className="counter-value" aria-live="polite">
-                {count}
-            </div>
+            </span>
 
             <div className="counter-button-list">
-                <Button variant="outline" onClick={() => setCount(prev => prev - step)}>
+                <Button
+                    variant="outline"
+                    onClick={decrease}
+                    disabled={value <= min}
+                >
                     −
                 </Button>
 
-                <Button variant="secondary" onClick={() => setCount(initial)}>
-                    Скинути
-                </Button>
+                <output className="counter-value" aria-live="polite">
+                    {value}
+                </output>
 
-                <Button variant="primary" onClick={() => setCount(prev => prev + step)}>
+                <Button
+                    variant="outline"
+                    onClick={increase}
+                    disabled={value >= max}
+                >
                     +
                 </Button>
             </div>

@@ -1,7 +1,7 @@
 import type {
     AnimeKpiSnapshot,
     AnimeKpiChanges,
-} from '../types/animeKpi.types';
+} from '../types/animeKpi.types.ts';
 
 export function calculateAnimeKpiChanges(
     current: AnimeKpiSnapshot,
@@ -26,6 +26,14 @@ export function calculateAnimeKpiChanges(
         topRatedChange = Number((
             current.topRatedRating - previous.topRatedRating
         ).toFixed(2));
+    }
+
+    if (current.totalAnime === 0 || previous.totalAnime === 0) {
+        return {
+            totalAnime: current.totalAnime - previous.totalAnime,
+            mostPopular: null,
+            topRated: null,
+        };
     }
 
     return {
