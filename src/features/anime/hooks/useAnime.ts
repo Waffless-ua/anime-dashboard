@@ -15,8 +15,8 @@ import type {
 } from '../types/animeApi.types';
 
 export function useAnime() {
-    const [statusFilter, setStatusFilter] =
-        useState<string>('');
+    const [statusFilter, setStatusFilter] = useState('');
+    const [limit, setLimit] = useState(ANIME_PAGE_SIZE);
 
     const [sortField, setSortField] =
         useState<AnimeSortField>(DEFAULT_ANIME_SORT);
@@ -33,11 +33,11 @@ export function useAnime() {
                     },
                     sort: sortField,
                     direction,
-                    limit: ANIME_PAGE_SIZE,
+                    limit,
                 },
                 signal
             ),
-        [statusFilter, sortField, direction]
+        [statusFilter, sortField, direction, limit]
     );
 
     const list = useAsyncResource(loadAnime);
@@ -57,5 +57,7 @@ export function useAnime() {
         setSortField,
         direction,
         toggleDirection,
+        limit,
+        setLimit,
     };
 }

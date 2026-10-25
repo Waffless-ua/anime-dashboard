@@ -2,6 +2,9 @@ import './App.css';
 
 import { useTheme } from '../features/theme/hooks/useTheme';
 import { useAnime } from '../features/anime/hooks/useAnime';
+import { useAnimeStats } from '../features/anime/hooks/useAnimeStats';
+
+import { ANIME_PAGE_SIZE } from '../features/anime/constants/anime.constants';
 
 import ThemeToggle from '../features/theme/ThemeToggle/ThemeToggle';
 import AnimeDashboard from '../features/anime/components/AnimeDashboard/AnimeDashboard';
@@ -11,16 +14,17 @@ import AnimeList from '../features/anime/components/AnimeList/AnimeList';
 
 import KpiCard from '../shared/components/ui/KpiCard/KpiCard';
 import Counter from '../shared/components/ui/Counter/Counter';
-import { useAnimeStats } from "../features/anime/hooks/useAnimeStats.ts";
 
 export default function App() {
     const { isDark, toggleTheme } = useTheme();
 
     const {
-        list, anime,
+        list,
+        anime,
         statusFilter, setStatusFilter,
         sortField, setSortField,
         direction, toggleDirection,
+        limit, setLimit,
     } = useAnime();
 
     const stats = useAnimeStats();
@@ -120,18 +124,21 @@ export default function App() {
                                     : 'negative'
                         }
                     />
-
-                    <Counter
-                        label="Переглянуто серій в середньому за тиждень"
-                        step={1}
-                        initial={0}
-                    />
                 </div>
 
                 <FilteredAnimeList
                     value={statusFilter}
                     onChange={setStatusFilter}
-                    label="Статус аніме:"
+                    controls={
+                        <Counter
+                            label="Аніме на сторінці:"
+                            value={limit}
+                            min={1}
+                            max={ANIME_PAGE_SIZE}
+                            onChange={setLimit}
+                            step={4}
+                        />
+                    }
                 >
                     <SortedAnimeList
                         sortField={sortField}

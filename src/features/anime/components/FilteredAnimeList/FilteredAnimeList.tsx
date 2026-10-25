@@ -9,6 +9,7 @@ interface FilteredAnimeListProps {
     value: string;
     onChange: (value: string) => void;
     label?: string;
+    controls?: ReactNode;
     children: ReactNode;
 }
 
@@ -16,6 +17,7 @@ export default function FilteredAnimeList({
     value,
     onChange,
     label = 'Статус аніме:',
+    controls,
     children,
 }: FilteredAnimeListProps) {
     const selectId = useId();
@@ -47,6 +49,8 @@ export default function FilteredAnimeList({
                         </option>
                     ))}
                 </select>
+
+                {controls}
             </div>
 
             {children}
