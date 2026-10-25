@@ -5,21 +5,16 @@ import './AnimeList.css';
 
 interface AnimeListProps {
     animeList: Anime[];
-    limit?: number;
 }
 
 export default function AnimeList({
     animeList,
-    limit,
 }: AnimeListProps) {
-    const visibleAnime = limit === undefined
-        ? animeList
-        : animeList.slice(0, Math.max(0, limit));
 
     return (
         <>
             <ul className="anime-grid">
-                {visibleAnime.map(anime => {
+                {animeList.map(anime => {
                     const {
                         canonicalTitle,
                         averageRating,

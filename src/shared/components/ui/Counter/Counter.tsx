@@ -41,7 +41,7 @@ export default function Counter({
                 <Button
                     variant="outline"
                     onClick={decrease}
-                    disabled={value <= step}
+                    disabled={value <= min}
                 >
                     −
                 </Button>

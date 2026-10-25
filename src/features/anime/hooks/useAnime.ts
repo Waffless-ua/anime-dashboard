@@ -1,7 +1,10 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
 
 import { fetchAnime } from '../api/animeApi';
+
 import { useAsyncResource } from '../../../shared/hooks/useAsyncResource';
+import { useDebounce } from '../../../shared/hooks/useDebounce';
 
 import {
     ANIME_PAGE_SIZE,
@@ -9,55 +12,59 @@ import {
     DEFAULT_SORT_DIRECTION,
 } from '../constants/anime.constants';
 
-import type {
-    AnimeSortField,
-    SortDirection,
-} from '../types/animeApi.types';
+import type { AnimeFilters } from '../types/animeFilters.types';
+import type { AnimeQuery } from '../types/animeApi.types';
+
+const DEFAULT_FILTERS: AnimeFilters = {
+    search: '',
+    status: '',
+    sort: DEFAULT_ANIME_SORT,
+    direction: DEFAULT_SORT_DIRECTION,
+    limit: ANIME_PAGE_SIZE,
+};
 
 export function useAnime() {
-    const [statusFilter, setStatusFilter] = useState('');
-    const [limit, setLimit] = useState(ANIME_PAGE_SIZE);
+    const { control, watch, reset } = useForm<AnimeFilters>({
+        defaultValues: DEFAULT_FILTERS,
+    });
 
-    const [sortField, setSortField] =
-        useState<AnimeSortField>(DEFAULT_ANIME_SORT);
+    const {
+        search,
+        status,
+        sort,
+        direction,
+        limit,
+    } = watch();
 
-    const [direction, setDirection] =
-        useState<SortDirection>(DEFAULT_SORT_DIRECTION);
+    const query = useMemo<AnimeQuery>(() => ({
+        filter: {
+            text: search.trim() || undefined,
+            status: status || undefined,
+        },
+        sort,
+        direction,
+        limit,
+    }), [search, status, sort, direction, limit]);
+
+    const debouncedQuery = useDebounce(query, 400);
 
     const loadAnime = useCallback(
         (signal: AbortSignal) =>
-            fetchAnime(
-                {
-                    filter: {
-                        status: statusFilter || undefined,
-                    },
-                    sort: sortField,
-                    direction,
-                    limit,
-                },
-                signal
-            ),
-        [statusFilter, sortField, direction, limit]
+            fetchAnime(debouncedQuery, signal),
+        [debouncedQuery]
     );
 
     const list = useAsyncResource(loadAnime);
 
-    function toggleDirection() {
-        setDirection(previous =>
-            previous === 'asc' ? 'desc' : 'asc'
-        );
+    function resetFilters() {
+        reset();
     }
 
     return {
         list,
         anime: list.data?.anime ?? [],
-        statusFilter,
-        setStatusFilter,
-        sortField,
-        setSortField,
-        direction,
-        toggleDirection,
-        limit,
-        setLimit,
+        control,
+        resetFilters,
+        debouncedQuery,
     };
 }

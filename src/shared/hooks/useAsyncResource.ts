@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import { getErrorMessage } from '../utils/getErrorMessage';
 import type { AsyncState } from '../types/async.types';
 
@@ -15,6 +16,7 @@ export function useAsyncResource<T>(
         data: null,
         error: null,
     });
+
     const [reloadCount, setReloadCount] = useState(0);
 
     useEffect(() => {
@@ -29,11 +31,20 @@ export function useAsyncResource<T>(
         async function loadResource() {
             try {
                 const data = await load(controller.signal);
-                if (controller.signal.aborted) return;
 
-                setRequest({ status: 'success', data, error: null });
+                if (controller.signal.aborted) {
+                    return;
+                }
+
+                setRequest({
+                    status: 'success',
+                    data,
+                    error: null,
+                });
             } catch (error) {
-                if (controller.signal.aborted) return;
+                if (controller.signal.aborted) {
+                    return;
+                }
 
                 setRequest(previous => ({
                     status: 'error',
@@ -44,12 +55,19 @@ export function useAsyncResource<T>(
         }
 
         void loadResource();
-        return () => controller.abort();
+
+        return () => {
+            controller.abort();
+        };
     }, [load, reloadCount, keepPreviousData]);
 
-    const reload = () => {
-        setReloadCount(count => count + 1);
-    };
+    function reload() {
+        setReloadCount(previous => previous + 1);
+    }
 
-    return { ...request, reload };
+    return {
+        ...request,
+        loading: request.status === 'loading',
+        reload,
+    };
 }

@@ -2,18 +2,12 @@ import './App.css';
 
 import { useTheme } from '../features/theme/hooks/useTheme';
 import { useAnime } from '../features/anime/hooks/useAnime';
-import { useAnimeStats } from '../features/anime/hooks/useAnimeStats';
-
-import { ANIME_PAGE_SIZE } from '../features/anime/constants/anime.constants';
 
 import ThemeToggle from '../features/theme/ThemeToggle/ThemeToggle';
 import AnimeDashboard from '../features/anime/components/AnimeDashboard/AnimeDashboard';
-import FilteredAnimeList from '../features/anime/components/FilteredAnimeList/FilteredAnimeList';
-import SortedAnimeList from '../features/anime/components/SortedAnimeList/SortedAnimeList';
 import AnimeList from '../features/anime/components/AnimeList/AnimeList';
-
-import KpiCard from '../shared/components/ui/KpiCard/KpiCard';
-import Counter from '../shared/components/ui/Counter/Counter';
+import AnimeFiltersForm from '../features/anime/components/AnimeFiltersForm/AnimeFiltersForm';
+import AnimeStats from '../features/anime/components/AnimeStats/AnimeStats';
 
 export default function App() {
     const { isDark, toggleTheme } = useTheme();
@@ -21,25 +15,10 @@ export default function App() {
     const {
         list,
         anime,
-        statusFilter, setStatusFilter,
-        sortField, setSortField,
-        direction, toggleDirection,
-        limit, setLimit,
+        control,
+        resetFilters,
+        debouncedQuery,
     } = useAnime();
-
-    const stats = useAnimeStats();
-
-    const {
-        total,
-        topRated,
-        mostPopular,
-        changes,
-    } = stats;
-
-    const hasStatsError =
-        total.status === 'error' ||
-        topRated.status === 'error' ||
-        mostPopular.status === 'error';
 
     return (
         <div
@@ -56,96 +35,13 @@ export default function App() {
                     />
                 </header>
 
-                {hasStatsError && (
-                    <button
-                        type="button"
-                        onClick={stats.retry}
-                    >
-                        Повторити завантаження статистики
-                    </button>
-                )}
-
-                <div className="kpi-section">
-                    <KpiCard
-                        title="Аніме в базі"
-                        status={total.status}
-                        value={total.data}
-                        change={changes.totalAnime}
-                        changePrefix={
-                            changes.totalAnime !== null &&
-                            changes.totalAnime > 0
-                                ? '+'
-                                : ''
-                        }
-                        changeSuffix=" аніме"
-                        changeStatus={
-                            changes.totalAnime === null ||
-                            changes.totalAnime === 0
-                                ? undefined
-                                : changes.totalAnime > 0
-                                    ? 'positive'
-                                    : 'negative'
-                        }
-                    />
-
-                    <KpiCard
-                        title="Найпопулярніше аніме"
-                        status={mostPopular.status}
-                        value={
-                            mostPopular.data?.attributes.canonicalTitle
-                        }
-                        change={changes.mostPopular}
-                    />
-
-                    <KpiCard
-                        title="Аніме з найвищим рейтингом"
-                        status={topRated.status}
-                        value={
-                            topRated.data?.attributes.canonicalTitle
-                        }
-                        change={changes.topRated}
-                        changePrefix={
-                            typeof changes.topRated === 'number' &&
-                            changes.topRated > 0
-                                ? '+'
-                                : ''
-                        }
-                        changeSuffix={
-                            typeof changes.topRated === 'number'
-                                ? ' п.п.'
-                                : ''
-                        }
-                        changeStatus={
-                            typeof changes.topRated !== 'number' ||
-                            changes.topRated === 0
-                                ? undefined
-                                : changes.topRated > 0
-                                    ? 'positive'
-                                    : 'negative'
-                        }
-                    />
-                </div>
-
-                <FilteredAnimeList
-                    value={statusFilter}
-                    onChange={setStatusFilter}
-                    controls={
-                        <Counter
-                            label="Аніме на сторінці:"
-                            value={limit}
-                            min={1}
-                            max={ANIME_PAGE_SIZE}
-                            onChange={setLimit}
-                            step={4}
+                <div className="dashboard-content">
+                    <main className="anime-list-container">
+                        <AnimeFiltersForm
+                            control={control}
+                            onReset={resetFilters}
                         />
-                    }
-                >
-                    <SortedAnimeList
-                        sortField={sortField}
-                        direction={direction}
-                        onSortChange={setSortField}
-                        onToggleDirection={toggleDirection}
-                    >
+
                         <AnimeDashboard
                             status={list.status}
                             error={list.error}
@@ -154,8 +50,15 @@ export default function App() {
                         >
                             <AnimeList animeList={anime} />
                         </AnimeDashboard>
-                    </SortedAnimeList>
-                </FilteredAnimeList>
+                    </main>
+
+                    <aside
+                        className="dashboard-sidebar"
+                        aria-label="Статистика вибірки"
+                    >
+                        <AnimeStats filter={debouncedQuery.filter} />
+                    </aside>
+                </div>
             </div>
         </div>
     );

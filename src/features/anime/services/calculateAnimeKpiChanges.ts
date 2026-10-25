@@ -28,6 +28,14 @@ export function calculateAnimeKpiChanges(
         ).toFixed(2));
     }
 
+    if (current.totalAnime === 0 || previous.totalAnime === 0) {
+        return {
+            totalAnime: current.totalAnime - previous.totalAnime,
+            mostPopular: null,
+            topRated: null,
+        };
+    }
+
     return {
         totalAnime: current.totalAnime - previous.totalAnime,
         mostPopular:
