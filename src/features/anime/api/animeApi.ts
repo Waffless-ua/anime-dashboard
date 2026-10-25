@@ -1,34 +1,64 @@
-import type { Anime } from '../types/anime.types';
-import isAnime from '../utils/isAnime';
+import { ANIME_PAGE_SIZE } from '../constants/anime.constants';
 
-interface AnimeApiResult {
-    anime: Anime[];
-    totalAnime: number;
-}
+import type {
+    AnimeQuery,
+    AnimeApiResult,
+} from '../types/animeApi.types';
+
+import isAnime from '../utils/isAnime';
 
 const API_BASE_URL = import.meta.env.VITE_KITSU_API_URL;
 
-const ANIME_PAGE_LIMIT = 20;
-
-function isRecord(
-    value: unknown
-): value is Record<string, unknown> {
+function isRecord(value: unknown): value is Record<string, unknown> {
     return typeof value === 'object' && value !== null;
 }
 
-async function requestAnime(
-    params: URLSearchParams,
+export async function fetchAnime(
+    query: AnimeQuery = {},
     signal?: AbortSignal
 ): Promise<AnimeApiResult> {
     if (!API_BASE_URL) {
         throw new Error('Kitsu API URL is not configured');
     }
 
-    const url = new URL(
-        `${API_BASE_URL.replace(/\/$/, '')}/anime`
-    );
+    const {
+        sort,
+        direction = 'asc',
+        filter,
+        limit = ANIME_PAGE_SIZE,
+    } = query;
 
-    url.search = params.toString();
+    const hasValidLimit =
+        Number.isInteger(limit) &&
+        limit >= 1 &&
+        limit <= ANIME_PAGE_SIZE;
+
+    if (!hasValidLimit) {
+        throw new Error(
+            `Anime limit must be between 1 and ${ANIME_PAGE_SIZE}`
+        );
+    }
+
+    const baseUrl = API_BASE_URL.replace(/\/$/, '');
+    const url = new URL(`${baseUrl}/anime`);
+
+    url.searchParams.set('page[limit]', String(limit));
+
+    if (sort) {
+        const sortValue = direction === 'desc' ? `-${sort}` : sort;
+
+        url.searchParams.set('sort', sortValue);
+    }
+
+    if (filter?.status) {
+        url.searchParams.set('filter[status]', filter.status);
+    }
+
+    const searchText = filter?.text?.trim();
+
+    if (searchText) {
+        url.searchParams.set('filter[text]', searchText);
+    }
 
     const response = await fetch(url.toString(), {
         headers: {
@@ -49,59 +79,38 @@ async function requestAnime(
         throw new Error('Invalid API response');
     }
 
-    if (
-        !Array.isArray(payload.data) ||
-        !payload.data.every(isAnime)
-    ) {
+    const { data, meta } = payload;
+
+    if (!Array.isArray(data)) {
+        throw new Error('API response data must be an array');
+    }
+
+    if (!data.every(isAnime)) {
+        const invalidRecords = data.filter(item => !isAnime(item));
+
+        console.error(
+            'Anime records that failed validation:',
+            invalidRecords
+        );
+
         throw new Error('Invalid anime data structure');
     }
 
-    if (
-        !isRecord(payload.meta) ||
-        typeof payload.meta.count !== 'number' ||
-        !Number.isFinite(payload.meta.count)
-    ) {
+    if (!isRecord(meta)) {
         throw new Error('Invalid API metadata');
     }
 
+    const totalAnime = meta.count;
+
+    if (
+        typeof totalAnime !== 'number' ||
+        !Number.isFinite(totalAnime)
+    ) {
+        throw new Error('Invalid anime total count');
+    }
+
     return {
-        anime: payload.data,
-        totalAnime: payload.meta.count,
+        anime: data,
+        totalAnime,
     };
-}
-
-export function fetchAnime(
-    signal?: AbortSignal
-): Promise<AnimeApiResult> {
-    const params = new URLSearchParams();
-
-    params.set('page[limit]', String(ANIME_PAGE_LIMIT));
-
-    return requestAnime(params, signal);
-}
-
-async function fetchRankedAnime(
-    sortField: string,
-    signal?: AbortSignal
-): Promise<Anime | null> {
-    const params = new URLSearchParams();
-
-    params.set('sort', sortField);
-    params.set('page[limit]', '1');
-
-    const result = await requestAnime(params, signal);
-
-    return result.anime[0] ?? null;
-}
-
-export function fetchMostPopularAnime(
-    signal?: AbortSignal
-): Promise<Anime | null> {
-    return fetchRankedAnime('popularityRank', signal);
-}
-
-export function fetchTopRatedAnime(
-    signal?: AbortSignal
-): Promise<Anime | null> {
-    return fetchRankedAnime('ratingRank', signal);
 }

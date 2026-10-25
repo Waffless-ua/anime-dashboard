@@ -6,12 +6,15 @@ export interface Anime {
         canonicalTitle: string;
         averageRating: string | null;
         episodeCount: number | null;
-        status: string;
-        showType: string;
+        status: string | null;
+        showType: string | null;
         popularityRank: number | null;
         ratingRank: number | null;
+        startDate: string | null;
+        createdAt: string;
+
         posterImage: {
-            small: string;
+            small?: string;
         } | null;
     };
 }

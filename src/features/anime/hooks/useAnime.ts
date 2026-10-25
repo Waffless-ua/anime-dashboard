@@ -1,109 +1,61 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
+
+import { fetchAnime } from '../api/animeApi';
+import { useAsyncResource } from '../../../shared/hooks/useAsyncResource';
 
 import {
-    fetchAnime,
-    fetchTopRatedAnime,
-    fetchMostPopularAnime,
-} from '../api/animeApi';
-
-import { useAsyncResource } from '../../../shared/hooks/useAsyncResource';
-import { useLocalStorage } from '../../../shared/hooks/useLocalStorage';
+    ANIME_PAGE_SIZE,
+    DEFAULT_ANIME_SORT,
+    DEFAULT_SORT_DIRECTION,
+} from '../constants/anime.constants';
 
 import type {
-    AnimeKpiSnapshot,
-    AnimeKpiChanges,
-} from '../types/animeKpi.types';
-
-import { createAnimeKpiSnapshot } from '../utils/createAnimeKpiSnapshot';
-import { calculateAnimeKpiChanges } from '../utils/calculateAnimeKpiChanges';
-
-const STORAGE_KEY = 'anime-kpi-snapshot';
+    AnimeSortField,
+    SortDirection,
+} from '../types/animeApi.types';
 
 export function useAnime() {
-    const list = useAsyncResource(fetchAnime, {
-        keepPreviousData: true,
-    });
+    const [statusFilter, setStatusFilter] =
+        useState<string>('');
 
-    const topRated = useAsyncResource(fetchTopRatedAnime);
-    const mostPopular = useAsyncResource(fetchMostPopularAnime);
+    const [sortField, setSortField] =
+        useState<AnimeSortField>(DEFAULT_ANIME_SORT);
 
-    const anime = list.data?.anime ?? [];
+    const [direction, setDirection] =
+        useState<SortDirection>(DEFAULT_SORT_DIRECTION);
 
-    const [savedSnapshot, setSavedSnapshot] =
-        useLocalStorage<AnimeKpiSnapshot | null>(
-            STORAGE_KEY,
-            null
+    const loadAnime = useCallback(
+        (signal: AbortSignal) =>
+            fetchAnime(
+                {
+                    filter: {
+                        status: statusFilter || undefined,
+                    },
+                    sort: sortField,
+                    direction,
+                    limit: ANIME_PAGE_SIZE,
+                },
+                signal
+            ),
+        [statusFilter, sortField, direction]
+    );
+
+    const list = useAsyncResource(loadAnime);
+
+    function toggleDirection() {
+        setDirection(previous =>
+            previous === 'asc' ? 'desc' : 'asc'
         );
-
-    const [changes, setChanges] = useState<AnimeKpiChanges>({
-        totalAnime: null,
-        mostPopular: null,
-        topRated: null,
-    });
-
-    const lastProcessed = useRef<
-        | {
-        list: typeof list.data;
-        topRated: typeof topRated.data;
-        mostPopular: typeof mostPopular.data;
-    } | undefined>(undefined);
-
-    useEffect(() => {
-        if ( list.status !== 'success' || topRated.status !== 'success' || mostPopular.status !== 'success') {
-            return;
-        }
-
-        const previousProcessing = lastProcessed.current;
-
-        if (
-            previousProcessing?.list === list.data &&
-            previousProcessing?.topRated === topRated.data &&
-            previousProcessing?.mostPopular === mostPopular.data
-        ) {
-            return;
-        }
-
-        lastProcessed.current = {
-            list: list.data,
-            topRated: topRated.data,
-            mostPopular: mostPopular.data,
-        };
-
-        const current = createAnimeKpiSnapshot(
-            list.data.totalAnime,
-            mostPopular.data,
-            topRated.data
-        );
-
-        setChanges(
-            calculateAnimeKpiChanges(current, savedSnapshot)
-        );
-
-        setSavedSnapshot(current);
-    }, [
-            list.status,
-            list.data,
-            topRated.status,
-            topRated.data,
-            mostPopular.status,
-            mostPopular.data,
-            savedSnapshot,
-            setSavedSnapshot,
-        ]);
-
-    const retry = () => {
-        list.reload();
-        topRated.reload();
-        mostPopular.reload();
-    };
+    }
 
     return {
         list,
-        topRated,
-        mostPopular,
-        anime,
-        retry,
-        changes,
-        lastUpdated: savedSnapshot?.savedAt ?? null,
+        anime: list.data?.anime ?? [],
+        statusFilter,
+        setStatusFilter,
+        sortField,
+        setSortField,
+        direction,
+        toggleDirection,
     };
 }

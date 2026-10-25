@@ -1,45 +1,21 @@
-import { useId, useMemo, useState } from 'react';
+import { useId } from 'react';
 import type { ReactNode } from 'react';
-import type { Anime } from '../../types/anime.types';
+import type { AnimeSortField, SortDirection } from '../../types/animeApi.types';
 import './SortedAnimeList.css';
-import { sortAnimeByRating } from "../../utils/sortAnimeByRating.ts";
-import { sortAnimeByTitle } from "../../utils/sortAnimeByTitle.ts";
-
-type SortField = 'title' | 'rating';
-type SortDirection = 'asc' | 'desc';
+import { ANIME_SORTING_OPTIONS } from "../../constants/anime.constants.ts";
 
 interface SortedAnimeListProps {
-    items: Anime[];
-    children: (sortedAnime: Anime[]) => ReactNode;
+    sortField: AnimeSortField;
+    direction: SortDirection;
+    onSortChange: (field: AnimeSortField) => void;
+    onToggleDirection: () => void;
+    children: ReactNode;
 }
 
 export default function SortedAnimeList({
-    items,
-    children,
+    sortField, direction, onSortChange, onToggleDirection, children,
 }: SortedAnimeListProps) {
-    const [sortField, setSortField] = useState<SortField>('title');
-    const [direction, setDirection] = useState<SortDirection>('asc');
     const selectId = useId();
-
-
-    const sortedAnime = useMemo(() => {
-        if (sortField === 'title') {
-            return sortAnimeByTitle(items, direction);
-        }
-
-        if (sortField === 'rating') {
-            return sortAnimeByRating(items, direction);
-        }
-
-        return items;
-    }, [items, sortField, direction]);
-
-
-    const toggleDirection = () => {
-        setDirection(prev =>
-            prev === 'asc' ? 'desc' : 'asc'
-        );
-    };
 
     return (
         <>
@@ -52,16 +28,22 @@ export default function SortedAnimeList({
                     id={selectId}
                     value={sortField}
                     onChange={(event) =>
-                        setSortField(event.target.value as SortField)
+                        onSortChange(event.target.value as AnimeSortField)
                     }
                 >
-                    <option value="title">Назвою</option>
-                    <option value="rating">Рейтингом</option>
+                    {ANIME_SORTING_OPTIONS.map(option => (
+                        <option
+                            key={option.value}
+                            value={option.value}
+                        >
+                            {option.label}
+                        </option>
+                    ))}
                 </select>
 
                 <button
                     type="button"
-                    onClick={toggleDirection}
+                    onClick={onToggleDirection}
                 >
                     {direction === 'asc'
                         ? '↑ За зростанням'
@@ -69,7 +51,7 @@ export default function SortedAnimeList({
                 </button>
             </div>
 
-            {children(sortedAnime)}
+            {children}
         </>
     );
 }

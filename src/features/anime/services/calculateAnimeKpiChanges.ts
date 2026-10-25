@@ -1,7 +1,7 @@
 import type {
     AnimeKpiSnapshot,
     AnimeKpiChanges,
-} from '../types/animeKpi.types';
+} from '../types/animeKpi.types.ts';
 
 export function calculateAnimeKpiChanges(
     current: AnimeKpiSnapshot,

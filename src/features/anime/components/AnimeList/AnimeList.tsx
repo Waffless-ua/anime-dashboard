@@ -1,4 +1,6 @@
 import type { Anime } from '../../types/anime.types';
+import { getAnimeStatusLabel } from '../../utils/getAnimeStatusLabel';
+
 import './AnimeList.css';
 
 interface AnimeListProps {
@@ -6,50 +8,67 @@ interface AnimeListProps {
     limit?: number;
 }
 
-export default function AnimeList({ animeList, limit }: AnimeListProps) {
-    const visibleAnime = limit === undefined ? animeList : animeList.slice(0, Math.max(0, limit));
+export default function AnimeList({
+    animeList,
+    limit,
+}: AnimeListProps) {
+    const visibleAnime = limit === undefined
+        ? animeList
+        : animeList.slice(0, Math.max(0, limit));
 
     return (
         <>
             <ul className="anime-grid">
-                {visibleAnime.map((anime) => (
-                    <li key={anime.id} className="anime-card">
-                        {anime.attributes.posterImage?.small && (
-                            <img
-                                src={anime.attributes.posterImage.small}
-                                alt={anime.attributes.canonicalTitle}
-                                className="anime-cover"
-                                loading="lazy"
-                            />
-                        )}
+                {visibleAnime.map(anime => {
+                    const {
+                        canonicalTitle,
+                        averageRating,
+                        episodeCount,
+                        status,
+                        showType,
+                        posterImage,
+                    } = anime.attributes;
 
-                        <h3 className="anime-title">
-                            {anime.attributes.canonicalTitle}
-                        </h3>
+                    return (
+                        <li key={anime.id} className="anime-card">
+                            {posterImage?.small && (
+                                <img
+                                    src={posterImage.small}
+                                    alt={canonicalTitle}
+                                    className="anime-cover"
+                                    loading="lazy"
+                                />
+                            )}
 
-                        <div className="anime-stats">
-                            <p>
-                                ⭐ Рейтинг:{' '}
-                                {anime.attributes.averageRating != null
-                                    ? `${anime.attributes.averageRating}%`
-                                    : 'Немає даних'}
-                            </p>
+                            <h3 className="anime-title">
+                                {canonicalTitle}
+                            </h3>
 
-                            <p>
-                                🎬 Епізоди:{' '}
-                                {anime.attributes.episodeCount ?? 'Невідомо'}
-                            </p>
+                            <div className="anime-stats">
+                                <p>
+                                    ⭐ Рейтинг:{' '}
+                                    {averageRating != null
+                                        ? `${averageRating}%`
+                                        : 'Немає даних'}
+                                </p>
 
-                            <p>
-                                📌 Статус: {anime.attributes.status || 'Невідомо'}
-                            </p>
+                                <p>
+                                    🎬 Епізоди:{' '}
+                                    {episodeCount ?? 'Невідомо'}
+                                </p>
 
-                            <p>
-                                📺 Тип: {anime.attributes.showType || 'Невідомо'}
-                            </p>
-                        </div>
-                    </li>
-                ))}
+                                <p>
+                                    📌 Статус:{' '}
+                                    {getAnimeStatusLabel(status)}
+                                </p>
+
+                                <p>
+                                    📺 Тип: {showType || 'Невідомо'}
+                                </p>
+                            </div>
+                        </li>
+                    );
+                })}
             </ul>
 
             {animeList.length === 0 && (
