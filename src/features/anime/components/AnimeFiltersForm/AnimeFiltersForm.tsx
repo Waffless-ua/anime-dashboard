@@ -5,9 +5,10 @@ import type { Control } from 'react-hook-form';
 import type { AnimeFilters } from '../../types/animeFilters.types';
 
 import {
-    ANIME_PAGE_SIZE,
     ANIME_STATUS_OPTIONS,
-    ANIME_SORTING_OPTIONS,
+    ANIME_SEASON_OPTIONS,
+    FIRST_ANIME_YEAR, LAST_ANIME_YEAR,
+    ANIME_PAGE_SIZE_MIN, ANIME_PAGE_SIZE_MAX, ANIME_SUBTYPE_OPTIONS
 } from '../../constants/anime.constants';
 
 import Counter from '../../../../shared/components/ui/Counter/Counter';
@@ -26,16 +27,12 @@ const STATUS_OPTIONS = [
     ...ANIME_STATUS_OPTIONS,
 ];
 
-const DIRECTION_OPTIONS = [
-    { value: 'asc', label: 'За зростанням' },
-    { value: 'desc', label: 'За спаданням' },
-];
-
 export default function AnimeFiltersForm({
     control,
     onReset,
 }: AnimeFiltersFormProps) {
     const searchId = useId();
+    const yearId = useId();
 
     return (
         <form
@@ -43,78 +40,101 @@ export default function AnimeFiltersForm({
             onSubmit={event => event.preventDefault()}
             aria-label="Пошук і фільтри аніме"
         >
-            <div className="anime-filter-field">
-                <label htmlFor={searchId}>
-                    Пошук за назвою
-                </label>
+            <div className="anime-filters-top">
+                <div className="anime-filter-field">
+                    <label htmlFor={searchId}>
+                        Пошук за назвою
+                    </label>
 
+                    <Controller
+                        name="filter.text"
+                        control={control}
+                        render={({ field }) => (
+                            <input
+                                {...field}
+                                id={searchId}
+                                type="search"
+                                placeholder="Введіть назву аніме"
+                            />
+                        )}
+                    />
+                </div>
+
+                <Button variant="outline" onClick={onReset}>
+                    Скинути фільтри
+                </Button>
+            </div>
+
+            <div className="anime-filters-bottom">
                 <Controller
-                    name="search"
+                    name="filter.status"
                     control={control}
                     render={({ field }) => (
-                        <input
+                        <Select
                             {...field}
-                            id={searchId}
-                            type="search"
-                            placeholder="Введіть назву аніме"
+                            label="Статус"
+                            options={STATUS_OPTIONS}
+                        />
+                    )}
+                />
+
+                <Controller
+                    name="filter.season"
+                    control={control}
+                    render={({ field }) => (
+                        <Select
+                            {...field}
+                            label="Сезон"
+                            options={ANIME_SEASON_OPTIONS}
+                        />
+                    )}
+                />
+
+                <Controller
+                    name="filter.subtype"
+                    control={control}
+                    render={({ field }) => (
+                        <Select
+                            {...field}
+                            label="Тип"
+                            options={ANIME_SUBTYPE_OPTIONS}
+                        />
+                    )}
+                />
+
+                <div className="anime-filter-field anime-year-field">
+                    <label htmlFor={yearId}>Рік</label>
+
+                    <Controller
+                        name="filter.seasonYear"
+                        control={control}
+                        render={({ field }) => (
+                            <input
+                                {...field}
+                                id={yearId}
+                                type="number"
+                                min={FIRST_ANIME_YEAR}
+                                max={LAST_ANIME_YEAR}
+                                placeholder="Всі роки"
+                            />
+                        )}
+                    />
+                </div>
+
+                <Controller
+                    name="limit"
+                    control={control}
+                    render={({ field }) => (
+                        <Counter
+                            label="Аніме на сторінці:"
+                            value={field.value}
+                            onChange={field.onChange}
+                            min={ANIME_PAGE_SIZE_MIN}
+                            max={ANIME_PAGE_SIZE_MAX}
                         />
                     )}
                 />
             </div>
-
-            <Controller
-                name="status"
-                control={control}
-                render={({ field }) => (
-                    <Select
-                        {...field}
-                        label="Статус"
-                        options={STATUS_OPTIONS}
-                    />
-                )}
-            />
-
-            <Controller
-                name="sort"
-                control={control}
-                render={({ field }) => (
-                    <Select
-                        {...field}
-                        label="Сортувати за"
-                        options={ANIME_SORTING_OPTIONS}
-                    />
-                )}
-            />
-
-            <Controller
-                name="direction"
-                control={control}
-                render={({ field }) => (
-                    <Select
-                        {...field}
-                        label="Напрямок"
-                        options={DIRECTION_OPTIONS}
-                    />
-                )}
-            />
-
-            <Controller
-                name="limit"
-                control={control}
-                render={({ field }) => (
-                    <Counter
-                        label="Аніме на сторінці:"
-                        value={field.value}
-                        onChange={field.onChange}
-                        min={1}
-                        max={ANIME_PAGE_SIZE}
-                    />
-                )}
-            />
-
-            <Button variant="outline" onClick={onReset}>
-                Скинути фільтри
-            </Button>
         </form>
     );
 }

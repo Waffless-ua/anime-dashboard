@@ -60,7 +60,7 @@ export default function isAnime(value: unknown): value is Anime {
         hasValidStatus &&
         isNullableString(attributes.averageRating) &&
         isNullableNumber(attributes.episodeCount) &&
-        isNullableString(attributes.showType) &&
+        isNullableString(attributes.subtype) &&
         isNullableNumber(attributes.popularityRank) &&
         isNullableNumber(attributes.ratingRank) &&
         isNullableString(attributes.startDate) &&

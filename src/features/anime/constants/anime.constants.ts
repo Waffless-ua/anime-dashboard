@@ -4,7 +4,8 @@ import type {
     SortDirection,
 } from '../types/animeApi.types';
 
-export const ANIME_PAGE_SIZE = 20;
+export const ANIME_PAGE_SIZE_MIN = 1;
+export const ANIME_PAGE_SIZE_MAX = 20;
 export const ANIME_KPI_STORAGE_KEY = 'anime-kpi-snapshot';
 
 export const DEFAULT_ANIME_SORT: AnimeSortField = 'popularityRank';
@@ -30,10 +31,33 @@ export const ANIME_SORTING_OPTIONS: ReadonlyArray<{
     label: string;
 }> = [
     { value: 'popularityRank', label: 'Популярністю' },
-    { value: 'averageRating', label: 'Середнім рейтингом' },
+    { value: 'ratingRank', label: 'Рейтингом'},
     { value: 'startDate', label: 'Датою виходу' },
     { value: 'createdAt', label: 'Датою додавання' },
 ];
+
+export const ANIME_SEASON_OPTIONS = [
+    { value: '', label: 'Всі' },
+    { value: 'winter', label: 'Зима' },
+    { value: 'spring', label: 'Весна' },
+    { value: 'summer', label: 'Літо' },
+    { value: 'fall', label: 'Осінь' },
+];
+
+export const ANIME_SUBTYPE_OPTIONS = [
+    { value: '', label: 'Всі' },
+    { value: 'ONA', label: 'ONA' },
+    { value: 'OVA', label: 'OVA' },
+    { value: 'TV', label: 'Телесеріал' },
+    { value: 'movie', label: 'Фільм' },
+    { value: 'music', label: 'Музичне відео' },
+    { value: 'special', label: 'Спецвипуск' },
+];
+
+
+export const FIRST_ANIME_YEAR = 1900;
+export const LAST_ANIME_YEAR = new Date().getFullYear() + 1;
+
 
 export const EMPTY_KPI_CHANGES: AnimeKpiChanges = {
     totalAnime: null,

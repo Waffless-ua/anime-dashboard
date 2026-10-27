@@ -8,12 +8,14 @@ import AnimeDashboard from '../features/anime/components/AnimeDashboard/AnimeDas
 import AnimeList from '../features/anime/components/AnimeList/AnimeList';
 import AnimeFiltersForm from '../features/anime/components/AnimeFiltersForm/AnimeFiltersForm';
 import AnimeStats from '../features/anime/components/AnimeStats/AnimeStats';
+import AnimeCard from "../features/anime/components/AnimeCard/AnimeCard.tsx";
+import AnimeSorting from "../features/anime/components/AnimeSorting/AnimeSorting.tsx";
 
 export default function App() {
     const { isDark, toggleTheme } = useTheme();
 
     const {
-        list,
+        request,
         anime,
         control,
         resetFilters,
@@ -42,13 +44,20 @@ export default function App() {
                             onReset={resetFilters}
                         />
 
+                        <AnimeSorting control={control} />
+
                         <AnimeDashboard
-                            status={list.status}
-                            error={list.error}
+                            request={request}
                             isEmpty={anime.length === 0}
-                            onRetry={list.reload}
                         >
-                            <AnimeList animeList={anime} />
+                            <AnimeList>
+                                {anime.map(animeItem => (
+                                    <AnimeCard
+                                        key={animeItem.id}
+                                        anime={animeItem}
+                                    />
+                                ))}
+                            </AnimeList>
                         </AnimeDashboard>
                     </main>
 

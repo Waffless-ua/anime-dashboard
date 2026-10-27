@@ -1,4 +1,4 @@
-import { ANIME_PAGE_SIZE } from '../constants/anime.constants';
+import { ANIME_PAGE_SIZE_MAX, ANIME_PAGE_SIZE_MIN } from '../constants/anime.constants';
 
 import type {
     AnimeQuery,
@@ -25,17 +25,17 @@ export async function fetchAnime(
         sort,
         direction = 'asc',
         filter,
-        limit = ANIME_PAGE_SIZE,
+        limit = ANIME_PAGE_SIZE_MAX,
     } = query;
 
     const hasValidLimit =
         Number.isInteger(limit) &&
         limit >= 1 &&
-        limit <= ANIME_PAGE_SIZE;
+        limit <= ANIME_PAGE_SIZE_MAX;
 
     if (!hasValidLimit) {
         throw new Error(
-            `Anime limit must be between 1 and ${ANIME_PAGE_SIZE}`
+            `Anime limit must be between ${ANIME_PAGE_SIZE_MIN} and ${ANIME_PAGE_SIZE_MAX}`
         );
     }
 
@@ -50,14 +50,12 @@ export async function fetchAnime(
         url.searchParams.set('sort', sortValue);
     }
 
-    if (filter?.status) {
-        url.searchParams.set('filter[status]', filter.status);
-    }
+    for (const [name, value] of Object.entries(filter ?? {})) {
+        const normalizedValue = value?.trim();
 
-    const searchText = filter?.text?.trim();
-
-    if (searchText) {
-        url.searchParams.set('filter[text]', searchText);
+        if (normalizedValue) {
+            url.searchParams.set(`filter[${name}]`, normalizedValue);
+        }
     }
 
     const response = await fetch(url.toString(), {

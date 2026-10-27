@@ -3,9 +3,16 @@ import type {
     SortDirection,
 } from './animeApi.types';
 
-export interface AnimeFilters {
-    search: string;
+export interface AnimeFilterValues {
+    text: string;
     status: string;
+    season: string;
+    seasonYear: string;
+    subtype: string;
+}
+
+export interface AnimeFilters {
+    filter: AnimeFilterValues;
     sort: AnimeSortField;
     direction: SortDirection;
     limit: number;

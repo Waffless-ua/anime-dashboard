@@ -37,14 +37,12 @@ interface StatsComparison {
 }
 
 export function useAnimeStats(filter: AnimeQuery['filter']) {
-    const text = filter?.text ?? '';
-    const status = filter?.status ?? '';
-
-    const filterKey = JSON.stringify([text, status]);
+    const filterKey = JSON.stringify(filter ?? {});
 
     const loadStats = useCallback(
         async (signal: AbortSignal): Promise<AnimeStatsResult> => {
-            const currentFilter = { text, status };
+            const currentFilter: AnimeQuery['filter'] =
+                JSON.parse(filterKey);
 
             const [total, topRated, mostPopular] = await Promise.all([
                 fetchAnimeTotal(currentFilter, signal),
@@ -59,7 +57,7 @@ export function useAnimeStats(filter: AnimeQuery['filter']) {
                 mostPopular,
             };
         },
-        [text, status, filterKey]
+        [filterKey]
     );
 
     const request = useAsyncResource(loadStats);
@@ -133,20 +131,11 @@ export function useAnimeStats(filter: AnimeQuery['filter']) {
             : EMPTY_KPI_CHANGES;
 
     return {
-        total: {
-            status: currentStatus,
-            data: currentData?.total ?? null,
-        },
-        topRated: {
-            status: currentStatus,
-            data: currentData?.topRated ?? null,
-        },
-        mostPopular: {
-            status: currentStatus,
-            data: currentData?.mostPopular ?? null,
-        },
+        status: currentStatus,
+        total: currentData?.total ?? null,
+        topRated: currentData?.topRated ?? null,
+        mostPopular: currentData?.mostPopular ?? null,
         changes,
         retry: request.reload,
-        lastUpdated: savedSnapshot?.savedAt ?? null,
     };
 }

@@ -7,7 +7,7 @@ export interface Anime {
         averageRating: string | null;
         episodeCount: number | null;
         status: string | null;
-        showType: string | null;
+        subtype: string | null;
         popularityRank: number | null;
         ratingRank: number | null;
         startDate: string | null;

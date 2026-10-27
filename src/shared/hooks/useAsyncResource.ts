@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { getErrorMessage } from '../utils/getErrorMessage';
-import type { AsyncState } from '../types/async.types';
+import type { AsyncResource, AsyncState } from '../types/async.types';
 
 interface AsyncResourceOptions {
     keepPreviousData?: boolean;
@@ -10,7 +10,7 @@ interface AsyncResourceOptions {
 export function useAsyncResource<T>(
     load: (signal: AbortSignal) => Promise<T>,
     { keepPreviousData = false }: AsyncResourceOptions = {}
-) {
+): AsyncResource<T> {
     const [request, setRequest] = useState<AsyncState<T>>({
         status: 'loading',
         data: null,
