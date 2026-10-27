@@ -54,15 +54,15 @@ export function useAnime() {
         [debouncedQuery]
     );
 
-    const list = useAsyncResource(loadAnime);
+    const { data, ...request } = useAsyncResource(loadAnime);
 
     function resetFilters() {
         reset();
     }
 
     return {
-        list,
-        anime: list.data?.anime ?? [],
+        request,
+        anime: data?.anime ?? [],
         control,
         resetFilters,
         debouncedQuery,

@@ -133,20 +133,11 @@ export function useAnimeStats(filter: AnimeQuery['filter']) {
             : EMPTY_KPI_CHANGES;
 
     return {
-        total: {
-            status: currentStatus,
-            data: currentData?.total ?? null,
-        },
-        topRated: {
-            status: currentStatus,
-            data: currentData?.topRated ?? null,
-        },
-        mostPopular: {
-            status: currentStatus,
-            data: currentData?.mostPopular ?? null,
-        },
+        status: currentStatus,
+        total: currentData?.total ?? null,
+        topRated: currentData?.topRated ?? null,
+        mostPopular: currentData?.mostPopular ?? null,
         changes,
         retry: request.reload,
-        lastUpdated: savedSnapshot?.savedAt ?? null,
     };
 }

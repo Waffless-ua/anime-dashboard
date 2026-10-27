@@ -5,27 +5,17 @@ import KpiCard from '../../../../shared/components/ui/KpiCard/KpiCard';
 import Button from '../../../../shared/components/ui/Button/Button';
 
 import './AnimeStats.css';
+import getChangePrefix from "../../../../shared/utils/getChangePrefix.ts";
+import getChangeStatus from "../../../../shared/utils/getChangeStatus.ts";
 
 interface AnimeStatsProps {
     filter: AnimeQuery['filter'];
 }
 
-function getChangeStatus(
-    change: string | number | null
-): 'positive' | 'negative' | 'neutral' {
-    if (typeof change !== 'number' || change === 0) {
-        return 'neutral';
-    }
-
-    return change > 0 ? 'positive' : 'negative';
-}
-
-function getChangePrefix(change: string | number | null): string {
-    return typeof change === 'number' && change > 0 ? '+' : '';
-}
 
 export default function AnimeStats({ filter }: AnimeStatsProps) {
     const {
+        status,
         total,
         topRated,
         mostPopular,
@@ -33,7 +23,7 @@ export default function AnimeStats({ filter }: AnimeStatsProps) {
         retry,
     } = useAnimeStats(filter);
 
-    const hasError = total.status === 'error';
+    const hasError = status === 'error';
 
     return (
         <section className="anime-stats-panel">
@@ -51,8 +41,8 @@ export default function AnimeStats({ filter }: AnimeStatsProps) {
             <div className="kpi-section">
                 <KpiCard
                     title="Знайдено аніме"
-                    status={total.status}
-                    value={total.data}
+                    status={status}
+                    value={total}
                     change={changes.totalAnime}
                     changePrefix={getChangePrefix(changes.totalAnime)}
                     changeSuffix=" аніме"
@@ -61,15 +51,15 @@ export default function AnimeStats({ filter }: AnimeStatsProps) {
 
                 <KpiCard
                     title="Найпопулярніше аніме"
-                    status={mostPopular.status}
-                    value={mostPopular.data?.attributes.canonicalTitle}
+                    status={status}
+                    value={mostPopular?.attributes.canonicalTitle}
                     change={changes.mostPopular}
                 />
 
                 <KpiCard
                     title="Найвищий рейтинг"
-                    status={topRated.status}
-                    value={topRated.data?.attributes.canonicalTitle}
+                    status={status}
+                    value={topRated?.attributes.canonicalTitle}
                     change={changes.topRated}
                     changePrefix={getChangePrefix(changes.topRated)}
                     changeSuffix={

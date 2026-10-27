@@ -1,23 +1,21 @@
 import type { ReactNode } from 'react';
+
+import type { RequestState } from '../../../../shared/types/async.types';
+
 import './AnimeDashboard.css';
-import type { AsyncStatus } from "../../../../shared/types/async.types.ts";
 
 interface AnimeDashboardProps {
-    status: AsyncStatus;
-    error: string | null;
+    request: RequestState;
     isEmpty: boolean;
-    onRetry: () => void;
     children: ReactNode;
 }
 
 export default function AnimeDashboard({
-    status,
-    error,
+    request,
     isEmpty,
-    onRetry,
     children,
 }: AnimeDashboardProps) {
-    if (status === 'loading') {
+    if (request.status === 'loading') {
         return (
             <section className="request-state" role="status">
                 <p>Завантаження аніме...</p>
@@ -25,14 +23,14 @@ export default function AnimeDashboard({
         );
     }
 
-    if (status === 'error') {
+    if (request.status === 'error') {
         return (
             <section className="request-state" role="alert">
                 <h2>Не вдалося завантажити аніме</h2>
 
-                <p>{error ?? 'Сталася невідома помилка.'}</p>
+                <p>{request.error ?? 'Сталася невідома помилка.'}</p>
 
-                <button type="button" onClick={onRetry}>
+                <button type="button" onClick={request.reload}>
                     Спробувати ще раз
                 </button>
             </section>

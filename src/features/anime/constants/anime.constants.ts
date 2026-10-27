@@ -30,10 +30,37 @@ export const ANIME_SORTING_OPTIONS: ReadonlyArray<{
     label: string;
 }> = [
     { value: 'popularityRank', label: 'Популярністю' },
-    { value: 'averageRating', label: 'Середнім рейтингом' },
+    { value: 'ratingRank', label: 'Рейтингом'},
     { value: 'startDate', label: 'Датою виходу' },
     { value: 'createdAt', label: 'Датою додавання' },
 ];
+
+export const ANIME_SEASON_OPTIONS = [
+    { value: '', label: 'Всі' },
+    { value: 'winter', label: 'Зима' },
+    { value: 'spring', label: 'Весна' },
+    { value: 'summer', label: 'Літо' },
+    { value: 'fall', label: 'Осінь' },
+];
+
+const FIRST_ANIME_YEAR = 1900;
+const LAST_ANIME_YEAR = new Date().getFullYear() + 1;
+
+export const ANIME_YEAR_OPTIONS = [
+    { value: '', label: 'Всі' },
+    ...Array.from(
+        { length: LAST_ANIME_YEAR - FIRST_ANIME_YEAR + 1 },
+        (_, index) => {
+            const year = LAST_ANIME_YEAR - index;
+
+            return {
+                value: String(year),
+                label: String(year),
+            };
+        }
+    ),
+];
+
 
 export const EMPTY_KPI_CHANGES: AnimeKpiChanges = {
     totalAnime: null,

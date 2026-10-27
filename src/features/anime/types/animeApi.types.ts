@@ -3,7 +3,6 @@ import type { Anime } from './anime.types';
 export type AnimeSortField =
     | 'popularityRank'
     | 'ratingRank'
-    | 'averageRating'
     | 'startDate'
     | 'createdAt';
 
@@ -15,6 +14,8 @@ export interface AnimeQuery {
 
     filter?: {
         status?: string;
+        season?: string;
+        seasonYear?: string;
         text?: string;
     };
 
