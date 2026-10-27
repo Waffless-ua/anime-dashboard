@@ -1,4 +1,5 @@
 import type { Anime } from './anime.types';
+import type { AnimeFilterValues } from './animeFilters.types';
 
 export type AnimeSortField =
     | 'popularityRank'
@@ -9,16 +10,9 @@ export type AnimeSortField =
 export type SortDirection = 'asc' | 'desc';
 
 export interface AnimeQuery {
+    filter?: Partial<AnimeFilterValues>;
     sort?: AnimeSortField;
     direction?: SortDirection;
-
-    filter?: {
-        status?: string;
-        season?: string;
-        seasonYear?: string;
-        text?: string;
-    };
-
     limit?: number;
 }
 

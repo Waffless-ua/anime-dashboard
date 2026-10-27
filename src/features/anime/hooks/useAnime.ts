@@ -7,20 +7,24 @@ import { useAsyncResource } from '../../../shared/hooks/useAsyncResource';
 import { useDebounce } from '../../../shared/hooks/useDebounce';
 
 import {
-    ANIME_PAGE_SIZE,
+    ANIME_PAGE_SIZE_MAX,
     DEFAULT_ANIME_SORT,
     DEFAULT_SORT_DIRECTION,
 } from '../constants/anime.constants';
 
 import type { AnimeFilters } from '../types/animeFilters.types';
-import type { AnimeQuery } from '../types/animeApi.types';
 
 const DEFAULT_FILTERS: AnimeFilters = {
-    search: '',
-    status: '',
+    filter: {
+        text: '',
+        status: '',
+        season: '',
+        seasonYear: '',
+        subtype: '',
+    },
     sort: DEFAULT_ANIME_SORT,
     direction: DEFAULT_SORT_DIRECTION,
-    limit: ANIME_PAGE_SIZE,
+    limit: ANIME_PAGE_SIZE_MAX,
 };
 
 export function useAnime() {
@@ -28,25 +32,13 @@ export function useAnime() {
         defaultValues: DEFAULT_FILTERS,
     });
 
-    const {
-        search,
-        status,
-        sort,
-        direction,
-        limit,
-    } = watch();
+    const queryKey = JSON.stringify(watch());
+    const debouncedQueryKey = useDebounce(queryKey, 400);
 
-    const query = useMemo<AnimeQuery>(() => ({
-        filter: {
-            text: search.trim() || undefined,
-            status: status || undefined,
-        },
-        sort,
-        direction,
-        limit,
-    }), [search, status, sort, direction, limit]);
-
-    const debouncedQuery = useDebounce(query, 400);
+    const debouncedQuery = useMemo<AnimeFilters>(
+        () => JSON.parse(debouncedQueryKey),
+        [debouncedQueryKey]
+    );
 
     const loadAnime = useCallback(
         (signal: AbortSignal) =>

@@ -4,7 +4,8 @@ import type {
     SortDirection,
 } from '../types/animeApi.types';
 
-export const ANIME_PAGE_SIZE = 20;
+export const ANIME_PAGE_SIZE_MIN = 1;
+export const ANIME_PAGE_SIZE_MAX = 20;
 export const ANIME_KPI_STORAGE_KEY = 'anime-kpi-snapshot';
 
 export const DEFAULT_ANIME_SORT: AnimeSortField = 'popularityRank';
@@ -43,23 +44,19 @@ export const ANIME_SEASON_OPTIONS = [
     { value: 'fall', label: 'Осінь' },
 ];
 
-const FIRST_ANIME_YEAR = 1900;
-const LAST_ANIME_YEAR = new Date().getFullYear() + 1;
-
-export const ANIME_YEAR_OPTIONS = [
+export const ANIME_SUBTYPE_OPTIONS = [
     { value: '', label: 'Всі' },
-    ...Array.from(
-        { length: LAST_ANIME_YEAR - FIRST_ANIME_YEAR + 1 },
-        (_, index) => {
-            const year = LAST_ANIME_YEAR - index;
-
-            return {
-                value: String(year),
-                label: String(year),
-            };
-        }
-    ),
+    { value: 'ONA', label: 'ONA' },
+    { value: 'OVA', label: 'OVA' },
+    { value: 'TV', label: 'Телесеріал' },
+    { value: 'movie', label: 'Фільм' },
+    { value: 'music', label: 'Музичне відео' },
+    { value: 'special', label: 'Спецвипуск' },
 ];
+
+
+export const FIRST_ANIME_YEAR = 1900;
+export const LAST_ANIME_YEAR = new Date().getFullYear() + 1;
 
 
 export const EMPTY_KPI_CHANGES: AnimeKpiChanges = {

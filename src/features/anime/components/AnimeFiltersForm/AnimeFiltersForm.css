@@ -1,18 +1,35 @@
 .anime-filters-form {
     display: flex;
-    align-items: flex-end;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 1rem;
 
     min-width: 0;
 }
 
+.anime-filters-top,
+.anime-filters-bottom {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+
+    min-width: 0;
+}
+
+.anime-filters-bottom {
+    flex-wrap: wrap;
+}
+
 .anime-filter-field {
     display: flex;
     flex-direction: column;
+    flex: 1;
     gap: 0.5rem;
 
     min-width: 0;
+}
+
+.anime-filters-top > button {
+    flex-shrink: 0;
 }
 
 .anime-filter-field label {
@@ -23,8 +40,9 @@
 }
 
 .anime-filter-field input {
+    box-sizing: border-box;
+    width: 100%;
     min-height: 38px;
-    max-width: 100%;
     padding: 0.5rem 0.75rem;
 
     font: inherit;
@@ -39,9 +57,24 @@
     outline: none;
 }
 
+.anime-year-field {
+    flex: 0 1 140px;
+}
+
 @media (max-width: 600px) {
-    .anime-filters-form > .anime-filter-field,
-    .anime-filters-form > .select-field {
+    .anime-filters-top {
+        flex-wrap: wrap;
+    }
+
+    .anime-filters-top > .anime-filter-field {
+        flex-basis: 100%;
+    }
+
+    .anime-filters-bottom > .select-field {
         width: 100%;
+    }
+
+    .anime-year-field {
+        flex: 1 1 100%;
     }
 }

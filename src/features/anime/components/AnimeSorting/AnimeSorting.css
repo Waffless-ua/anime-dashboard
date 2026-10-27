@@ -1,0 +1,14 @@
+.anime-sorting {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    min-width: 0;
+}
+
+@media (max-width: 600px) {
+    .anime-sorting > .select-field {
+        width: 100%;
+    }
+}

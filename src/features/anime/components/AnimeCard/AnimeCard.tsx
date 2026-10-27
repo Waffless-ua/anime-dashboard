@@ -14,7 +14,7 @@ export default function AnimeCard({ anime }: AnimeCardProps) {
         averageRating,
         episodeCount,
         status,
-        showType,
+        subtype,
         posterImage,
     } = anime.attributes;
 
@@ -49,7 +49,7 @@ export default function AnimeCard({ anime }: AnimeCardProps) {
                 </p>
 
                 <p>
-                    📺 Тип: {showType || 'Невідомо'}
+                    📺 Тип: {subtype || 'Невідомо'}
                 </p>
             </div>
         </li>

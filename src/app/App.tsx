@@ -9,6 +9,7 @@ import AnimeList from '../features/anime/components/AnimeList/AnimeList';
 import AnimeFiltersForm from '../features/anime/components/AnimeFiltersForm/AnimeFiltersForm';
 import AnimeStats from '../features/anime/components/AnimeStats/AnimeStats';
 import AnimeCard from "../features/anime/components/AnimeCard/AnimeCard.tsx";
+import AnimeSorting from "../features/anime/components/AnimeSorting/AnimeSorting.tsx";
 
 export default function App() {
     const { isDark, toggleTheme } = useTheme();
@@ -42,6 +43,8 @@ export default function App() {
                             control={control}
                             onReset={resetFilters}
                         />
+
+                        <AnimeSorting control={control} />
 
                         <AnimeDashboard
                             request={request}
