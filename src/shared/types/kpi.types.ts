@@ -1,0 +1,1 @@
+export type ChangeStatus = 'positive' | 'negative' | 'neutral';

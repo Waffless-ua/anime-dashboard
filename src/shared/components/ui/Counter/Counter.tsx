@@ -31,7 +31,6 @@ export default function Counter({
         <div
             className="counter-widget"
             role="group"
-            aria-label={label}
         >
             <span className="counter-label">
                 {label}

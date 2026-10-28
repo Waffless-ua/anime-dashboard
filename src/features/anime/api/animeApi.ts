@@ -1,4 +1,4 @@
-import { ANIME_PAGE_SIZE_MAX, ANIME_PAGE_SIZE_MIN } from '../constants/anime.constants';
+import { ANIME_PAGE_SIZE_MAX, ANIME_PAGE_SIZE_MIN, DEFAULT_SORT_DIRECTION } from '../constants/anime.constants';
 
 import type {
     AnimeQuery,
@@ -23,14 +23,14 @@ export async function fetchAnime(
 
     const {
         sort,
-        direction = 'asc',
+        direction = DEFAULT_SORT_DIRECTION,
         filter,
         limit = ANIME_PAGE_SIZE_MAX,
     } = query;
 
     const hasValidLimit =
         Number.isInteger(limit) &&
-        limit >= 1 &&
+        limit >= ANIME_PAGE_SIZE_MIN &&
         limit <= ANIME_PAGE_SIZE_MAX;
 
     if (!hasValidLimit) {

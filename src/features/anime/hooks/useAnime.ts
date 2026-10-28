@@ -6,30 +6,13 @@ import { fetchAnime } from '../api/animeApi';
 import { useAsyncResource } from '../../../shared/hooks/useAsyncResource';
 import { useDebounce } from '../../../shared/hooks/useDebounce';
 
-import {
-    ANIME_PAGE_SIZE_MAX,
-    DEFAULT_ANIME_SORT,
-    DEFAULT_SORT_DIRECTION,
-} from '../constants/anime.constants';
+import { DEFAULT_ANIME_FILTERS } from '../constants/anime.constants';
 
 import type { AnimeFilters } from '../types/animeFilters.types';
 
-const DEFAULT_FILTERS: AnimeFilters = {
-    filter: {
-        text: '',
-        status: '',
-        season: '',
-        seasonYear: '',
-        subtype: '',
-    },
-    sort: DEFAULT_ANIME_SORT,
-    direction: DEFAULT_SORT_DIRECTION,
-    limit: ANIME_PAGE_SIZE_MAX,
-};
-
 export function useAnime() {
     const { control, watch, reset } = useForm<AnimeFilters>({
-        defaultValues: DEFAULT_FILTERS,
+        defaultValues: DEFAULT_ANIME_FILTERS,
     });
 
     const queryKey = JSON.stringify(watch());

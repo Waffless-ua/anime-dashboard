@@ -2,17 +2,14 @@ import type {
     AnimeKpiSnapshot,
     AnimeKpiChanges,
 } from '../types/animeKpi.types.ts';
+import { EMPTY_KPI_CHANGES } from "../constants/anime.constants.ts";
 
 export function calculateAnimeKpiChanges(
     current: AnimeKpiSnapshot,
     previous: AnimeKpiSnapshot | null
 ): AnimeKpiChanges {
     if (previous === null) {
-        return {
-            totalAnime: null,
-            mostPopular: null,
-            topRated: null,
-        };
+        return { ...EMPTY_KPI_CHANGES }
     }
 
     let topRatedChange: number | string | null = null;

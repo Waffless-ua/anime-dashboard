@@ -2,11 +2,7 @@ import { useId } from 'react';
 import type { Ref } from 'react';
 
 import './Select.css';
-
-interface SelectOption {
-    value: string;
-    label: string;
-}
+import type { SelectOption } from "../../../types/select.types.ts";
 
 interface SelectProps {
     label: string;

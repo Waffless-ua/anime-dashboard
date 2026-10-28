@@ -1,6 +1,7 @@
 import './KpiCard.css';
 
 import type { AsyncStatus } from '../../../types/async.types';
+import type { ChangeStatus } from "../../../types/kpi.types.ts";
 
 interface KpiCardProps {
     title: string;
@@ -8,7 +9,7 @@ interface KpiCardProps {
     change?: string | number | null;
     changePrefix?: string;
     changeSuffix?: string;
-    changeStatus?: 'positive' | 'negative' | 'neutral';
+    changeStatus?: ChangeStatus;
     status?: AsyncStatus;
 }
 

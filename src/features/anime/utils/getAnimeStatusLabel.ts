@@ -1,13 +1,10 @@
-import { ANIME_STATUS_LABELS } from '../constants/anime.constants';
+import { ANIME_STATUS_OPTIONS } from '../constants/anime.constants';
 
 export function getAnimeStatusLabel(status: string | null): string {
     if (!status) {
         return 'Невідомо';
     }
 
-    if (Object.hasOwn(ANIME_STATUS_LABELS, status)) {
-        return ANIME_STATUS_LABELS[status];
-    }
-
-    return status;
+    return ANIME_STATUS_OPTIONS.find(option => option.value === status)?.label
+        ?? status;
 }

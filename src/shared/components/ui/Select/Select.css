@@ -4,6 +4,7 @@
     gap: 0.5rem;
 
     min-width: 0;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .select-field label {

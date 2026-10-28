@@ -1,7 +1,10 @@
-import type {
-    AnimeSortField,
-    SortDirection,
-} from './animeApi.types';
+export type AnimeSortField =
+    | 'popularityRank'
+    | 'ratingRank'
+    | 'startDate'
+    | 'createdAt';
+
+export type SortDirection = 'asc' | 'desc';
 
 export interface AnimeFilterValues {
     text: string;
