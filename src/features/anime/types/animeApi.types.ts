@@ -10,8 +10,8 @@ export interface AnimeQuery {
     sort?: AnimeSortField;
     direction?: SortDirection;
     limit?: number;
+    offset?: number;
 }
-
 export interface AnimeApiResult {
     anime: Anime[];
     totalAnime: number;

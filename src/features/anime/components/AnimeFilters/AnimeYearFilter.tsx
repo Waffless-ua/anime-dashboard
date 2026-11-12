@@ -1,22 +1,17 @@
 import { useId } from 'react';
 import { useController } from 'react-hook-form';
-import type { Control } from 'react-hook-form';
 
-import type { AnimeFilters } from '../../types/animeFilters.types';
+import { useAnimeFilters } from '../../hooks/useAnimeFilters';
 import {
     FIRST_ANIME_YEAR,
     LAST_ANIME_YEAR,
 } from '../../constants/anime.constants';
+
 import './AnimeFilters.css';
 
-interface AnimeYearFilterProps {
-    control: Control<AnimeFilters>;
-}
-
-export default function AnimeYearFilter({
-    control,
-}: AnimeYearFilterProps) {
+export default function AnimeYearFilter() {
     const yearId = useId();
+    const { control } = useAnimeFilters();
 
     const { field } = useController({
         name: 'filter.seasonYear',

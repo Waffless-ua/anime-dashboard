@@ -1,19 +1,17 @@
 import { useAnimeStats } from '../../hooks/useAnimeStats';
-import type { AnimeQuery } from '../../types/animeApi.types';
+import { useAnimeFilters } from '../../hooks/useAnimeFilters';
 
 import KpiCard from '../../../../shared/components/ui/KpiCard/KpiCard';
 import Button from '../../../../shared/components/ui/Button/Button';
 
+import getChangePrefix from '../../../../shared/utils/getChangePrefix';
+import getChangeStatus from '../../../../shared/utils/getChangeStatus';
+
 import './AnimeStats.css';
-import getChangePrefix from "../../../../shared/utils/getChangePrefix.ts";
-import getChangeStatus from "../../../../shared/utils/getChangeStatus.ts";
 
-interface AnimeStatsProps {
-    filter: AnimeQuery['filter'];
-}
+export default function AnimeStats() {
+    const { debouncedQuery } = useAnimeFilters();
 
-
-export default function AnimeStats({ filter }: AnimeStatsProps) {
     const {
         status,
         total,
@@ -21,7 +19,7 @@ export default function AnimeStats({ filter }: AnimeStatsProps) {
         mostPopular,
         changes,
         retry,
-    } = useAnimeStats(filter);
+    } = useAnimeStats(debouncedQuery.filter);
 
     const hasError = status === 'error';
 
