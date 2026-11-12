@@ -1,24 +1,31 @@
 import type { ReactNode } from 'react';
 
-import type { RequestState } from '../../../../shared/types/async.types';
+import type { RequestState } from '../../../types/async.types';
+import Button from '../../ui/Button/Button';
 
-import './AnimeDashboard.css';
+import './RequestBoundary.css';
 
-interface AnimeDashboardProps {
+interface RequestBoundaryProps {
     request: RequestState;
-    isEmpty: boolean;
     children: ReactNode;
+    isEmpty?: boolean;
+    loadingMessage?: string;
+    errorTitle?: string;
+    emptyMessage?: string;
 }
 
-export default function AnimeDashboard({
+export default function RequestBoundary({
     request,
-    isEmpty,
     children,
-}: AnimeDashboardProps) {
+    isEmpty = false,
+    loadingMessage = 'Завантаження...',
+    errorTitle = 'Не вдалося завантажити дані',
+    emptyMessage = 'Немає даних.',
+}: RequestBoundaryProps) {
     if (request.status === 'loading') {
         return (
             <section className="request-state" role="status">
-                <p>Завантаження аніме...</p>
+                <p>{loadingMessage}</p>
             </section>
         );
     }
@@ -26,13 +33,12 @@ export default function AnimeDashboard({
     if (request.status === 'error') {
         return (
             <section className="request-state" role="alert">
-                <h2>Не вдалося завантажити аніме</h2>
-
+                <h2>{errorTitle}</h2>
                 <p>{request.error ?? 'Сталася невідома помилка.'}</p>
 
-                <button type="button" onClick={request.reload}>
+                <Button variant="outline" onClick={request.reload}>
                     Спробувати ще раз
-                </button>
+                </Button>
             </section>
         );
     }
@@ -40,7 +46,7 @@ export default function AnimeDashboard({
     if (isEmpty) {
         return (
             <section className="request-state" role="status">
-                <p>Аніме не знайдено.</p>
+                <p>{emptyMessage}</p>
             </section>
         );
     }

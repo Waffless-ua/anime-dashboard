@@ -1,3 +1,5 @@
+import { Link } from 'react-router';
+
 import type { Anime } from '../../types/anime.types';
 
 import { getAnimeStatusLabel } from '../../utils/getAnimeStatusLabel';
@@ -30,7 +32,7 @@ export default function AnimeCard({ anime }: AnimeCardProps) {
             )}
 
             <h3 className="anime-title">
-                {canonicalTitle}
+                <Link to={`/anime/${anime.id}`}>{canonicalTitle}</Link>
             </h3>
 
             <div className="anime-stats">

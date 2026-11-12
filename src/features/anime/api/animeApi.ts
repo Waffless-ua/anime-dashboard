@@ -6,12 +6,16 @@ import type {
 } from '../types/animeApi.types';
 
 import isAnime from '../utils/isAnime';
+import type { AnimeDetailsData } from '../types/animeDetails.types';
+
+import {
+    getNullableText,
+    getPositiveNumber, isRecord,
+} from '../utils/apiValues';
 
 const API_BASE_URL = import.meta.env.VITE_KITSU_API_URL;
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-    return typeof value === 'object' && value !== null;
-}
+const DEFAULT_OFFSET = 0;
 
 export async function fetchAnime(
     query: AnimeQuery = {},
@@ -26,6 +30,7 @@ export async function fetchAnime(
         direction = DEFAULT_SORT_DIRECTION,
         filter,
         limit = ANIME_PAGE_SIZE_MAX,
+        offset = DEFAULT_OFFSET,
     } = query;
 
     const hasValidLimit =
@@ -39,10 +44,12 @@ export async function fetchAnime(
         );
     }
 
+    if (!Number.isInteger(offset) || offset < DEFAULT_OFFSET) {
+        throw new Error('Anime offset must be a non-negative integer');
+    }
+
     const baseUrl = API_BASE_URL.replace(/\/$/, '');
     const url = new URL(`${baseUrl}/anime`);
-
-    url.searchParams.set('page[limit]', String(limit));
 
     if (sort) {
         const sortValue = direction === 'desc' ? `-${sort}` : sort;
@@ -50,13 +57,26 @@ export async function fetchAnime(
         url.searchParams.set('sort', sortValue);
     }
 
+    let hasActiveFilter = false;
+
     for (const [name, value] of Object.entries(filter ?? {})) {
         const normalizedValue = value?.trim();
 
         if (normalizedValue) {
             url.searchParams.set(`filter[${name}]`, normalizedValue);
+            hasActiveFilter = true;
         }
     }
+
+    // Kitsu can and will return the same results for the first two pages of a filtered query.
+    // TODO: Remove this offset adjustment once Kitsu returns distinct pages.
+    const apiOffset = hasActiveFilter && offset > 0
+        ? offset + limit
+        : offset;
+
+
+    url.searchParams.set('page[limit]', String(limit));
+    url.searchParams.set('page[offset]', String(apiOffset));
 
     const response = await fetch(url.toString(), {
         headers: {
@@ -110,5 +130,55 @@ export async function fetchAnime(
     return {
         anime: data,
         totalAnime,
+    };
+}
+
+
+export async function fetchAnimeById(
+    id: string,
+    signal?: AbortSignal
+): Promise<AnimeDetailsData> {
+    if (!API_BASE_URL) {
+        throw new Error('API URL is not configured');
+    }
+
+    const baseUrl = API_BASE_URL.replace(/\/$/, '');
+    const url = `${baseUrl}/anime/${encodeURIComponent(id)}`;
+
+    const response = await fetch(url, {
+        headers: {
+            Accept: 'application/vnd.api+json',
+        },
+        signal,
+    });
+
+    if (response.status === 404) {
+        throw new Error('Аніме не знайдено.');
+    }
+
+    if (!response.ok) {
+        throw new Error(
+            `Не вдалося завантажити аніме: HTTP ${response.status}`
+        );
+    }
+
+    const payload: unknown = await response.json();
+
+    if (!isRecord(payload) || !isAnime(payload.data)) {
+        throw new Error('Некоректна структура даних аніме.');
+    }
+
+    const attributes: Record<string, unknown> =
+        payload.data.attributes;
+
+    return {
+        ...payload.data,
+        details: {
+            synopsis: getNullableText(attributes.synopsis),
+            endDate: getNullableText(attributes.endDate),
+            episodeLength: getPositiveNumber(attributes.episodeLength),
+            ageRating: getNullableText(attributes.ageRating),
+            ageRatingGuide: getNullableText(attributes.ageRatingGuide),
+        },
     };
 }

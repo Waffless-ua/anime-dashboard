@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useContext } from 'react';
+
+import { ThemeContext } from '../context/ThemeContext';
 
 export function useTheme() {
-    const [isDark, setIsDark] = useState(false);
+    const context = useContext(ThemeContext);
 
-    const toggleTheme = () => {
-        setIsDark(prev => !prev);
-    };
+    if (context === undefined) {
+        throw new Error(
+            'useTheme must be used within ThemeProvider'
+        );
+    }
 
-    return { isDark, toggleTheme };
+    return context;
 }
