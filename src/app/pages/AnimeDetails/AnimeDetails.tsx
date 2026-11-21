@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import AnimeEpisodes from '../../../features/anime/components/AnimeEpisodes/AnimeEpisodes';
 import { ANIME_DETAIL_FACTS } from '../../../features/anime/constants/animeDetails.constants';
@@ -6,23 +6,18 @@ import { useAnimeDetails } from '../../../features/anime/hooks/useAnimeDetails';
 import RequestBoundary from '../../../shared/components/ui/RequestBoundary/RequestBoundary';
 
 import './AnimeDetails.css';
+import Button from "../../../shared/components/ui/Button/Button.tsx";
 
 export default function AnimeDetails() {
     const { id } = useParams();
-
-    return <AnimeDetailsContent key={id} id={id} />;
-}
-
-interface AnimeDetailsContentProps {
-    id: string | undefined;
-}
-
-function AnimeDetailsContent({ id }: AnimeDetailsContentProps) {
     const { anime, request } = useAnimeDetails(id);
+    const navigate = useNavigate();
 
     return (
         <main className="dashboard-layout anime-details-page">
-            <Link to="/">← Повернутися до дашборду</Link>
+            <Button variant={"secondary"} onClick={() => navigate(-1)}>
+                ← Назад
+            </Button>
 
             <RequestBoundary
                 request={request}
