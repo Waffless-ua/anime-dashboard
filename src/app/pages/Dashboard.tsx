@@ -34,66 +34,66 @@ export default function Dashboard() {
 
     return (
         <div className="dashboard-layout">
-            <div className="dashboard-content">
-                <aside className="dashboard-filters">
-                    <h2 id="filters-heading">Фільтри</h2>
+                <div className="dashboard-content">
+                    <aside className="dashboard-filters">
+                        <h2 id="filters-heading">Фільтри</h2>
 
-                    <form
-                        className="anime-controls-form"
-                        onSubmit={event => event.preventDefault()}
-                    >
-                        <AnimeStatusFilter />
-                        <AnimeYearFilter />
-                        <AnimeSubtypeFilter />
-                        <AnimeSeasonFilter />
-                        <AnimePageSizeFilter />
-
-                        <Button
-                            variant="outline"
-                            onClick={resetFilters}
+                        <form
+                            className="anime-controls-form"
+                            onSubmit={event => event.preventDefault()}
                         >
-                            Скинути фільтри
-                        </Button>
-                    </form>
-                </aside>
+                            <AnimeStatusFilter />
+                            <AnimeYearFilter />
+                            <AnimeSubtypeFilter />
+                            <AnimeSeasonFilter />
+                            <AnimePageSizeFilter />
 
-                <main className="anime-list-container">
-                    <AnimeSearchFilter />
+                            <Button
+                                variant="outline"
+                                onClick={resetFilters}
+                            >
+                                Скинути фільтри
+                            </Button>
+                        </form>
+                    </aside>
 
-                    <div className="anime-sorting-row" role="group">
-                        <AnimeSortField />
-                        <AnimeSortDirection />
-                    </div>
+                    <main className="anime-list-container">
+                        <AnimeSearchFilter />
 
-                    <RequestBoundary
-                        request={request}
-                        isEmpty={anime.length === 0}
-                        loadingMessage="Завантаження аніме..."
-                        errorTitle="Не вдалося завантажити аніме"
-                        emptyMessage="Аніме не знайдено."
-                    >
-                        <AnimeList>
-                            {anime.map(animeItem => (
-                                <AnimeCard
-                                    key={animeItem.id}
-                                    anime={animeItem}
-                                />
-                            ))}
-                        </AnimeList>
-                    </RequestBoundary>
+                        <div className="anime-sorting-row" role="group">
+                            <AnimeSortField />
+                            <AnimeSortDirection />
+                        </div>
 
-                    <PagePaginator
-                        page={page}
-                        hasNextPage={hasNextPage}
-                        onChange={changePage}
-                        label="Сторінки списку аніме"
-                    />
-                </main>
+                        <RequestBoundary
+                            request={request}
+                            isEmpty={anime.length === 0}
+                            loadingMessage="Завантаження аніме..."
+                            errorTitle="Не вдалося завантажити аніме"
+                            emptyMessage="Аніме не знайдено."
+                        >
+                            <AnimeList>
+                                {anime.map(animeItem => (
+                                    <AnimeCard
+                                        key={animeItem.id}
+                                        anime={animeItem}
+                                    />
+                                ))}
+                            </AnimeList>
+                        </RequestBoundary>
 
-                <aside className="dashboard-sidebar">
-                    <AnimeStats />
-                </aside>
+                        <PagePaginator
+                            page={page}
+                            hasNextPage={hasNextPage}
+                            onChange={changePage}
+                            label="Сторінки списку аніме"
+                        />
+                    </main>
+
+                    <aside className="dashboard-sidebar">
+                        <AnimeStats />
+                    </aside>
+                </div>
             </div>
-        </div>
     );
 }

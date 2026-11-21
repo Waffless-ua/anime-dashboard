@@ -6,8 +6,8 @@ export default function ThemeToggle() {
     const { isDark, toggleTheme } = useTheme();
 
     return (
-        <Button variant="secondary" onClick={toggleTheme}>
-            {isDark ? '☀️ Світла тема' : '🌙 Темна тема'}
+        <Button variant="primary" onClick={toggleTheme}>
+            {isDark ? '🌙 Темна тема ' : '☀️ Світла тема'}
         </Button>
     );
 }
