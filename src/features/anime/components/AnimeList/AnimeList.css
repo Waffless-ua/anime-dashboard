@@ -1,15 +1,12 @@
-.anime-list-container {
-    container-type: inline-size;
-    container-name: anime-list;
-    min-width: 0;
-}
-
 .anime-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fill,
+        minmax(min(100%, 240px), 1fr)
+    );
+
     align-items: stretch;
-    gap: 1.5rem;
+    gap: 1rem;
 
     width: 100%;
     min-width: 0;
@@ -17,27 +14,4 @@
     padding: 0;
 
     list-style: none;
-}
-
-.anime-grid > .anime-card {
-    box-sizing: border-box;
-    flex: 0 0 100%;
-}
-
-@container anime-list (min-width: 480px) {
-    .anime-grid > .anime-card {
-        flex-basis: calc((100% - 1.5rem) / 2);
-    }
-}
-
-@container anime-list (min-width: 720px) {
-    .anime-grid > .anime-card {
-        flex-basis: calc((100% - 3rem) / 3);
-    }
-}
-
-@container anime-list (min-width: 1080px) {
-    .anime-grid > .anime-card {
-        flex-basis: calc((100% - 4.5rem) / 4);
-    }
 }
