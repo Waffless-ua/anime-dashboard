@@ -19,6 +19,7 @@ import Button from '../../../shared/components/ui/Button/Button.tsx';
 import RequestBoundary from '../../../shared/components/ui/RequestBoundary/RequestBoundary.tsx';
 import PagePaginator from '../../../shared/components/ui/PagePaginator/PagePaginator.tsx';
 import { useAnimeFilters } from "../../../features/anime/hooks/useAnimeFilters.ts";
+import FavoriteButton from "../../../features/favorites/components/FavoriteButton/FavoriteButton.tsx";
 
 export default function Dashboard() {
     const {
@@ -71,7 +72,9 @@ export default function Dashboard() {
                                     <AnimeCard
                                         key={animeItem.id}
                                         anime={animeItem}
-                                    />
+                                    >
+                                        <FavoriteButton animeId={animeItem.id} />
+                                    </AnimeCard>
                                 ))}
                             </AnimeList>
                         </RequestBoundary>

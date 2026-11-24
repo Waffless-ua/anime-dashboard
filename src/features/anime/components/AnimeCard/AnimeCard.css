@@ -96,11 +96,6 @@
     border-radius: 12px;
 }
 
-.anime-card:focus-within {
-    outline: 2px solid var(--text-color);
-    outline-offset: 2px;
-}
-
 .anime-title a {
     color: inherit;
     text-decoration: none;

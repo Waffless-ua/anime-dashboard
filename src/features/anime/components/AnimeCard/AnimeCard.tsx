@@ -5,12 +5,14 @@ import type { Anime } from '../../types/anime.types';
 import { getAnimeStatusLabel } from '../../utils/getAnimeStatusLabel';
 
 import './AnimeCard.css';
+import type { ReactNode } from "react";
 
 interface AnimeCardProps {
     anime: Anime;
+    children?: ReactNode;
 }
 
-export default function AnimeCard({ anime }: AnimeCardProps) {
+export default function AnimeCard({ anime, children }: AnimeCardProps) {
     const {
         canonicalTitle,
         averageRating,
@@ -54,6 +56,7 @@ export default function AnimeCard({ anime }: AnimeCardProps) {
                     📺 Тип: {subtype || 'Невідомо'}
                 </p>
             </div>
+            {children}
         </li>
     );
 }
