@@ -86,7 +86,7 @@ export default function Dashboard() {
                     </main>
 
                     <aside className="dashboard-sidebar">
-                        <AnimeStats filter={debouncedQuery.filter} />
+                        <AnimeStats />
                     </aside>
                 </div>
             </div>

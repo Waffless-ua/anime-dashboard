@@ -7,13 +7,17 @@ import getChangePrefix from '../../../../shared/utils/getChangePrefix';
 import getChangeStatus from '../../../../shared/utils/getChangeStatus';
 
 import './AnimeStats.css';
-import type { AnimeFilterValues } from "../../types/animeFilters.types.ts";
+import { useAppSelector } from "../../../../app/hooks.ts";
+import { selectAnimeFilters } from "../../store/animeQuerySlice.ts";
+import { useDebounce } from "../../../../shared/hooks/useDebounce.ts";
 
-interface AnimeStatsProps {
-    filter: AnimeFilterValues;
-}
 
-export default function AnimeStats({ filter }: AnimeStatsProps) {
+export default function AnimeStats() {
+    const filter = useAppSelector(
+        state => selectAnimeFilters(state).filter
+    );
+    const debouncedFilter = useDebounce(filter, 400);
+
     const {
         status,
         total,
@@ -21,9 +25,10 @@ export default function AnimeStats({ filter }: AnimeStatsProps) {
         mostPopular,
         changes,
         retry,
-    } = useAnimeStats(filter);
+    } = useAnimeStats(debouncedFilter);
 
     const hasError = status === 'error';
+
 
     return (
         <section className="anime-stats-panel">
