@@ -1,21 +1,17 @@
-import { useController } from 'react-hook-form';
-
-import { useAnimeFilters } from '../../hooks/useAnimeFilters';
 import { ANIME_SORTING_OPTIONS } from '../../constants/anime.constants';
 
 import Select from '../../../../shared/components/ui/Select/Select';
 
-export default function AnimeSortField() {
-    const { control } = useAnimeFilters();
+interface AnimeSortFieldProps {
+    value: string;
+    onChange: (value: string) => void;
+}
 
-    const { field } = useController({
-        name: 'sort',
-        control,
-    });
-
+export default function AnimeSortField({ value, onChange }: AnimeSortFieldProps) {
     return (
         <Select
-            {...field}
+            value={value}
+            onChange={onChange}
             label="Сортувати за"
             options={ANIME_SORTING_OPTIONS}
         />

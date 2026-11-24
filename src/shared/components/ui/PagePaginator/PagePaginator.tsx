@@ -1,31 +1,38 @@
 import Button from '../Button/Button';
+import { usePagination } from '../../../hooks/usePagination';
 
 import './PagePaginator.css';
 
 interface PagePaginatorProps {
     page: number;
-    hasNextPage: boolean;
     onChange: (page: number) => void;
+    totalItems: number;
+    pageSize: number;
     page_step?: number;
     label?: string;
 }
 
-const FIRST_PAGE = 1;
-const DEFAULT_PAGE_STEP = 1;
-
 export default function PagePaginator({
     page,
-    hasNextPage,
     onChange,
-    page_step = DEFAULT_PAGE_STEP,
+    totalItems,
+    pageSize,
+    page_step = 1,
     label = 'Навігація сторінками',
 }: PagePaginatorProps) {
+    const { hasNextPage, changePage } = usePagination(
+        page,
+        onChange,
+        totalItems,
+        pageSize,
+    );
+
     function previousPage() {
-        onChange(Math.max(FIRST_PAGE, page - page_step));
+        changePage(Math.max(1, page - page_step));
     }
 
     function nextPage() {
-        onChange(page + page_step);
+        changePage(page + page_step);
     }
 
     return (
@@ -34,7 +41,7 @@ export default function PagePaginator({
                 variant="outline"
                 className="page-paginator__button"
                 onClick={previousPage}
-                disabled={page <= FIRST_PAGE}
+                disabled={page <= 1}
             >
                 <span aria-hidden="true">←</span>
                 <span className="page-paginator__text">

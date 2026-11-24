@@ -14,7 +14,7 @@ export function useAnimeEpisodes(animeId: string, page: number) {
 
     return {
         episodes: data?.episodes ?? [],
-        hasNextPage: data?.hasNextPage ?? false,
+        totalEpisodes: data?.totalEpisodes ?? 0,
         request,
     };
 }

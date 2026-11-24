@@ -1,5 +1,4 @@
 import { useAnime } from '../../features/anime/hooks/useAnime';
-import { useAnimeFilters } from '../../features/anime/hooks/useAnimeFilters';
 
 import AnimeList from '../../features/anime/components/AnimeList/AnimeList';
 import AnimeCard from '../../features/anime/components/AnimeCard/AnimeCard';
@@ -18,19 +17,23 @@ import AnimeSortDirection from '../../features/anime/components/AnimeSorting/Ani
 import Button from '../../shared/components/ui/Button/Button';
 import RequestBoundary from '../../shared/components/ui/RequestBoundary/RequestBoundary';
 import PagePaginator from '../../shared/components/ui/PagePaginator/PagePaginator';
+import { useSearchParams } from "react-router";
+import { useAnimeFilters } from "../../features/anime/hooks/useAnimeFilters.ts";
 
 export default function Dashboard() {
-    const {
-        request,
-        anime,
-        hasNextPage,
-    } = useAnime();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const {
-        resetFilters,
+        filters,
+        debouncedQuery,
         page,
         changePage,
-    } = useAnimeFilters();
+        changeFilter,
+        resetFilters,
+    } = useAnimeFilters(searchParams, setSearchParams);
+
+    const { request, anime, totalAnime } = useAnime(debouncedQuery, page);
+
 
     return (
         <div className="dashboard-layout">
@@ -42,27 +45,48 @@ export default function Dashboard() {
                             className="anime-controls-form"
                             onSubmit={event => event.preventDefault()}
                         >
-                            <AnimeStatusFilter />
-                            <AnimeYearFilter />
-                            <AnimeSubtypeFilter />
-                            <AnimeSeasonFilter />
-                            <AnimePageSizeFilter />
+                            <AnimeStatusFilter
+                                value={filters.filter.status}
+                                onChange={value => changeFilter('status', value)}
+                            />
+                            <AnimeYearFilter
+                                value={filters.filter.seasonYear}
+                                onChange={value => changeFilter('seasonYear', value)}
+                            />
+                            <AnimeSubtypeFilter
+                                value={filters.filter.subtype}
+                                onChange={value => changeFilter('subtype', value)}
+                            />
+                            <AnimeSeasonFilter
+                                value={filters.filter.season}
+                                onChange={value => changeFilter('season', value)}
+                            />
+                            <AnimePageSizeFilter
+                                value={filters.limit}
+                                onChange={value => changeFilter('limit', value)}
+                            />
 
-                            <Button
-                                variant="outline"
-                                onClick={resetFilters}
-                            >
+                            <Button variant="outline" onClick={resetFilters}>
                                 Скинути фільтри
                             </Button>
                         </form>
                     </aside>
 
                     <main className="anime-list-container">
-                        <AnimeSearchFilter />
+                        <AnimeSearchFilter
+                            value={filters.filter.text}
+                            onChange={value => changeFilter('text', value)}
+                        />
 
                         <div className="anime-sorting-row" role="group">
-                            <AnimeSortField />
-                            <AnimeSortDirection />
+                            <AnimeSortField
+                                value={filters.sort}
+                                onChange={value => changeFilter('sort', value)}
+                            />
+                            <AnimeSortDirection
+                                value={filters.direction}
+                                onChange={value => changeFilter('direction', value)}
+                            />
                         </div>
 
                         <RequestBoundary
@@ -84,14 +108,15 @@ export default function Dashboard() {
 
                         <PagePaginator
                             page={page}
-                            hasNextPage={hasNextPage}
                             onChange={changePage}
+                            totalItems={totalAnime}
+                            pageSize={debouncedQuery.limit}
                             label="Сторінки списку аніме"
                         />
                     </main>
 
                     <aside className="dashboard-sidebar">
-                        <AnimeStats />
+                        <AnimeStats filter={debouncedQuery.filter} />
                     </aside>
                 </div>
             </div>

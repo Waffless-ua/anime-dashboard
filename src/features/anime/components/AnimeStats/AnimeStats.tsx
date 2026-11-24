@@ -1,5 +1,4 @@
 import { useAnimeStats } from '../../hooks/useAnimeStats';
-import { useAnimeFilters } from '../../hooks/useAnimeFilters';
 
 import KpiCard from '../../../../shared/components/ui/KpiCard/KpiCard';
 import Button from '../../../../shared/components/ui/Button/Button';
@@ -8,10 +7,13 @@ import getChangePrefix from '../../../../shared/utils/getChangePrefix';
 import getChangeStatus from '../../../../shared/utils/getChangeStatus';
 
 import './AnimeStats.css';
+import type { AnimeFilterValues } from "../../types/animeFilters.types.ts";
 
-export default function AnimeStats() {
-    const { debouncedQuery } = useAnimeFilters();
+interface AnimeStatsProps {
+    filter: AnimeFilterValues;
+}
 
+export default function AnimeStats({ filter }: AnimeStatsProps) {
     const {
         status,
         total,
@@ -19,7 +21,7 @@ export default function AnimeStats() {
         mostPopular,
         changes,
         retry,
-    } = useAnimeStats(debouncedQuery.filter);
+    } = useAnimeStats(filter);
 
     const hasError = status === 'error';
 

@@ -6,6 +6,8 @@ interface AnimeDetailFact {
     getValue: (anime: AnimeDetailsData) => string | number;
 }
 
+export const EPISODES_PAGE_SIZE = 20;
+
 export const ANIME_DETAIL_FACTS: readonly AnimeDetailFact[] = [
     {
         label: 'Рейтинг',

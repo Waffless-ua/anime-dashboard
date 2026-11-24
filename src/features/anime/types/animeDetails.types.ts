@@ -20,5 +20,5 @@ export interface AnimeEpisode {
 
 export interface AnimeEpisodesPage {
     episodes: AnimeEpisode[];
-    hasNextPage: boolean;
+    totalEpisodes: number;
 }

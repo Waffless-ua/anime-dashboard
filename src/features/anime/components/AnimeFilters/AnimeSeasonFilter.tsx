@@ -1,23 +1,19 @@
-import { useController } from 'react-hook-form';
-
-import { useAnimeFilters } from '../../hooks/useAnimeFilters';
 import { ANIME_SEASON_OPTIONS } from '../../constants/anime.constants';
 
 import Select from '../../../../shared/components/ui/Select/Select';
 
 import './AnimeFilters.css';
 
-export default function AnimeSeasonFilter() {
-    const { control } = useAnimeFilters();
+interface AnimeSeasonFilterProps {
+    value: string;
+    onChange: (value: string) => void;
+}
 
-    const { field } = useController({
-        name: 'filter.season',
-        control,
-    });
-
+export default function AnimeSeasonFilter({ value, onChange }: AnimeSeasonFilterProps) {
     return (
         <Select
-            {...field}
+            value={value}
+            onChange={onChange}
             label="Сезон"
             options={ANIME_SEASON_OPTIONS}
         />

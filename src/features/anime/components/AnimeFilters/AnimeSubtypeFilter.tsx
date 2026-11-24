@@ -1,23 +1,19 @@
-import { useController } from 'react-hook-form';
-
-import { useAnimeFilters } from '../../hooks/useAnimeFilters';
 import { ANIME_SUBTYPE_OPTIONS } from '../../constants/anime.constants';
 
 import Select from '../../../../shared/components/ui/Select/Select';
 
 import './AnimeFilters.css';
 
-export default function AnimeSubtypeFilter() {
-    const { control } = useAnimeFilters();
+interface AnimeSubtypeFilterProps {
+    value: string;
+    onChange: (value: string) => void;
+}
 
-    const { field } = useController({
-        name: 'filter.subtype',
-        control,
-    });
-
+export default function AnimeSubtypeFilter({ value, onChange }: AnimeSubtypeFilterProps) {
     return (
         <Select
-            {...field}
+            value={value}
+            onChange={onChange}
             label="Тип"
             options={ANIME_SUBTYPE_OPTIONS}
         />
