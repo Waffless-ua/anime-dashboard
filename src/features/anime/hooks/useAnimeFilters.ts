@@ -1,56 +1,32 @@
-import { useMemo } from 'react';
-import type { SetURLSearchParams } from 'react-router';
-
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { useDebounce } from '../../../shared/hooks/useDebounce';
-import { parseAnimeFilters } from '../utils/parseAnimeFilters';
-import type { AnimeFilters } from '../types/animeFilters.types';
 
-type FilterName = keyof AnimeFilters['filter'] | 'sort' | 'direction' | 'limit';
+import {
+    changePage as changePageAction,
+    resetFilters as resetFiltersAction,
+    selectAnimeFilters,
+    selectAnimePage,
+} from '../store/animeQuerySlice';
 
-export function useAnimeFilters(
-    searchParams: URLSearchParams,
-    setSearchParams: SetURLSearchParams,
-) {
-    const filters = parseAnimeFilters(searchParams);
+export function useAnimeFilters() {
+    const dispatch = useAppDispatch();
 
-    const debouncedKey = useDebounce(JSON.stringify(filters), 400);
-    const debouncedQuery = useMemo<AnimeFilters>(
-        () => JSON.parse(debouncedKey),
-        [debouncedKey]
-    );
+    const filters = useAppSelector(selectAnimeFilters);
+    const page = useAppSelector(selectAnimePage);
 
-    const rawPage = Number(searchParams.get('page') ?? 1);
-    const page = Number.isSafeInteger(rawPage) && rawPage > 0 ? rawPage : 1;
+    const debouncedQuery = useDebounce(filters, 400);
 
-    function changeFilter(name: FilterName, value: string | number) {
-        setSearchParams(previous => {
-            const next = new URLSearchParams(previous);
-
-            if (value === '') next.delete(name);
-            else next.set(name, String(value));
-
-            next.delete('page');
-            return next;
-        });
-    }
-
-    function changePage(nextPage: number) {
-        setSearchParams(previous => {
-            const next = new URLSearchParams(previous);
-            next.set('page', String(nextPage));
-            return next;
-        });
+    function changePage(page: number) {
+        dispatch(changePageAction(page));
     }
 
     function resetFilters() {
-        setSearchParams({});
+        dispatch(resetFiltersAction());
     }
 
     return {
-        filters,
         debouncedQuery,
         page,
-        changeFilter,
         changePage,
         resetFilters,
     };

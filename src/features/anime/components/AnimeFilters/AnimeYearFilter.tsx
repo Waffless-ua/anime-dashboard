@@ -1,27 +1,29 @@
 import { useId } from 'react';
 
-import {
-    FIRST_ANIME_YEAR,
-    LAST_ANIME_YEAR,
-} from '../../constants/anime.constants';
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import { changeFilter, selectAnimeFilters, } from '../../store/animeQuerySlice';
+import { FIRST_ANIME_YEAR, LAST_ANIME_YEAR, } from '../../constants/anime.constants';
 
 import './AnimeFilters.css';
 
-interface AnimeYearFilterProps {
-    value: string;
-    onChange: (value: string) => void;
-}
-
-export default function AnimeYearFilter({ value, onChange }: AnimeYearFilterProps) {
+export default function AnimeYearFilter() {
     const yearId = useId();
+    const dispatch = useAppDispatch();
+    const year = useAppSelector(
+        state => selectAnimeFilters(state).filter.seasonYear
+    );
+
+    function changeYear(value: string) {
+        dispatch(changeFilter({ name: 'seasonYear', value }));
+    }
 
     return (
         <div className="anime-filter-field anime-year-field">
             <label htmlFor={yearId}>Рік</label>
 
             <input
-                value={value}
-                onChange={event => onChange(event.currentTarget.value)}
+                value={year}
+                onChange={event => changeYear(event.currentTarget.value)}
                 id={yearId}
                 type="number"
                 min={FIRST_ANIME_YEAR}

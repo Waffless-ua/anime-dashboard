@@ -1,17 +1,30 @@
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import {
+    changeDirection,
+    selectAnimeFilters,
+} from '../../store/animeQuerySlice';
 import { DIRECTION_OPTIONS } from '../../constants/anime.constants';
 
 import Select from '../../../../shared/components/ui/Select/Select';
 
-interface AnimeSortDirectionProps {
-    value: string;
-    onChange: (value: string) => void;
-}
+export default function AnimeSortDirection() {
+    const dispatch = useAppDispatch();
+    const direction = useAppSelector(
+        state => selectAnimeFilters(state).direction
+    );
 
-export default function AnimeSortDirection({ value, onChange }: AnimeSortDirectionProps) {
+    function changeSortDirection(value: string) {
+        const option = DIRECTION_OPTIONS.find(option => option.value === value);
+
+        if (option) {
+            dispatch(changeDirection(option.value));
+        }
+    }
+
     return (
         <Select
-            value={value}
-            onChange={onChange}
+            value={direction}
+            onChange={changeSortDirection}
             label="Напрямок"
             options={DIRECTION_OPTIONS}
         />

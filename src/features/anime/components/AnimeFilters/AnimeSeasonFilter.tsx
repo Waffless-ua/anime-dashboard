@@ -1,19 +1,28 @@
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import {
+    changeFilter,
+    selectAnimeFilters,
+} from '../../store/animeQuerySlice';
 import { ANIME_SEASON_OPTIONS } from '../../constants/anime.constants';
 
 import Select from '../../../../shared/components/ui/Select/Select';
 
 import './AnimeFilters.css';
 
-interface AnimeSeasonFilterProps {
-    value: string;
-    onChange: (value: string) => void;
-}
+export default function AnimeSeasonFilter() {
+    const dispatch = useAppDispatch();
+    const season = useAppSelector(
+        state => selectAnimeFilters(state).filter.season
+    );
 
-export default function AnimeSeasonFilter({ value, onChange }: AnimeSeasonFilterProps) {
+    function changeSeason(value: string) {
+        dispatch(changeFilter({ name: 'season', value }));
+    }
+
     return (
         <Select
-            value={value}
-            onChange={onChange}
+            value={season}
+            onChange={changeSeason}
             label="Сезон"
             options={ANIME_SEASON_OPTIONS}
         />

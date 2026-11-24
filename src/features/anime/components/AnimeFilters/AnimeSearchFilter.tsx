@@ -1,16 +1,26 @@
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import {
+    changeFilter,
+    selectAnimeFilters,
+} from '../../store/animeQuerySlice';
+
 import './AnimeFilters.css';
 
-interface AnimeSearchFilterProps {
-    value: string;
-    onChange: (value: string) => void;
-}
+export default function AnimeSearchFilter() {
+    const dispatch = useAppDispatch();
+    const text = useAppSelector(
+        state => selectAnimeFilters(state).filter.text
+    );
 
-export default function AnimeSearchFilter({ value, onChange }: AnimeSearchFilterProps) {
+    function changeText(value: string) {
+        dispatch(changeFilter({ name: 'text', value }));
+    }
+
     return (
         <div className="anime-filter-field">
             <input
-                value={value}
-                onChange={event => onChange(event.currentTarget.value)}
+                value={text}
+                onChange={event => changeText(event.currentTarget.value)}
                 type="search"
                 aria-label="Пошук аніме за назвою"
                 placeholder="Введіть назву аніме"

@@ -1,6 +1,6 @@
 import { createBrowserRouter, createRoutesFromElements, Route } from "react-router";
-import Layout from "./Layout.tsx";
-import Dashboard from "./pages/Dashboard.tsx";
+import Layout from "./Layout/Layout.tsx";
+import Dashboard from "./pages/Dashboard/Dashboard.tsx";
 import AnimeDetails from "./pages/AnimeDetails/AnimeDetails.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
