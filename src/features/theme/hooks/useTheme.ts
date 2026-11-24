@@ -1,15 +1,16 @@
-import { useContext } from 'react';
-
-import { ThemeContext } from '../context/ThemeContext';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import {
+    selectIsDark,
+    toggleTheme as toggleThemeAction,
+} from '../store/themeSlice';
 
 export function useTheme() {
-    const context = useContext(ThemeContext);
+    const isDark = useAppSelector(selectIsDark);
+    const dispatch = useAppDispatch();
 
-    if (context === undefined) {
-        throw new Error(
-            'useTheme must be used within ThemeProvider'
-        );
+    function toggleTheme() {
+        dispatch(toggleThemeAction());
     }
 
-    return context;
+    return { isDark, toggleTheme };
 }

@@ -1,0 +1,53 @@
+.anime-statistics-page {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    width: 100%;
+    min-width: 0;
+}
+
+.anime-chart-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    width: 100%;
+    min-width: 0;
+    padding-top: 2rem;
+
+    border-top: 1px solid var(--border-color);
+}
+
+.anime-chart-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    min-width: 0;
+}
+
+.anime-chart-header h2 {
+    margin: 0;
+
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.4;
+
+    color: var(--text-color);
+}
+
+@media (max-width: 760px) {
+    .anime-statistics-page {
+        gap: 1.5rem;
+    }
+
+    .anime-chart-panel {
+        gap: 1rem;
+        padding-top: 1.5rem;
+    }
+
+    .anime-chart-header h2 {
+        font-size: 1.125rem;
+    }
+}

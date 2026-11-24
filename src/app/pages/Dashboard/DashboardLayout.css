@@ -1,0 +1,228 @@
+
+.dashboard-layout {
+    --dashboard-gap: 1.5rem;
+    --dashboard-sticky-top: calc(
+            var(--layout-header-height, 5rem) + var(--dashboard-gap)
+    );
+
+    width: 100%;
+    padding: var(--dashboard-gap);
+}
+
+.dashboard-content {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    grid-template-areas: "filters main";
+    align-items: start;
+    gap: var(--dashboard-gap);
+
+    width: 100%;
+    min-width: 0;
+}
+
+.dashboard-filters {
+    grid-area: filters;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+    position: sticky;
+    top: var(--dashboard-sticky-top);
+    align-self: start;
+
+    min-width: 0;
+    padding: 1.25rem;
+
+    background-color: var(--secondary-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+}
+
+.dashboard-filters h2 {
+    margin: 0;
+
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1.4;
+
+    color: var(--text-color);
+}
+
+.anime-controls-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    width: 100%;
+    min-width: 0;
+}
+
+
+.dashboard-main {
+    grid-area: main;
+
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    min-width: 0;
+}
+
+.dashboard-tabs {
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: flex-end;
+    gap: 0.25rem;
+
+    min-width: 0;
+    padding: 0 0.75rem;
+    margin-bottom: -1px;
+}
+
+.dashboard-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+
+    min-height: 44px;
+    padding: 0.75rem 1.5rem;
+
+    background-color: var(--tertiary-color);
+    color: var(--text-color);
+
+    border: 1px solid var(--border-color);
+    border-radius: 10px 10px 0 0;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-align: center;
+    text-decoration: none;
+
+    white-space: nowrap;
+
+    transition:
+            background-color var(--theme-duration, 0.3s) ease,
+            border-color var(--theme-duration, 0.3s) ease,
+            color var(--theme-duration, 0.3s) ease;
+}
+
+.dashboard-tab:not(.dashboard-tab--active):hover {
+    background-color: var(--tertiary-hover);
+}
+
+.dashboard-tab--active,
+.dashboard-tab--active:hover {
+    z-index: 2;
+
+    background-color: var(--secondary-color);
+    border-bottom-color: var(--secondary-color);
+}
+
+.dashboard-tab:focus-visible {
+    outline: 2px solid #8b5cf6;
+    outline-offset: 2px;
+}
+
+.dashboard-tab-content {
+    position: relative;
+    z-index: 1;
+
+    flex: 1;
+
+    width: 100%;
+    min-width: 0;
+    min-height: 300px;
+    padding: 1.5rem;
+
+    background-color: var(--secondary-color);
+
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+}
+
+@media (max-width: 1400px) {
+    .dashboard-content {
+        grid-template-columns: 220px minmax(0, 1fr);
+    }
+
+    .dashboard-filters {
+        padding: 1rem;
+    }
+
+    .dashboard-tab-content {
+        padding: 1.25rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .dashboard-layout {
+        --dashboard-gap: 1rem;
+    }
+
+    .dashboard-content {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "filters"
+            "main";
+    }
+
+    .dashboard-filters {
+        position: static;
+        top: auto;
+
+        gap: 1rem;
+    }
+
+    .anime-controls-form {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: end;
+        gap: 1rem;
+    }
+
+    .anime-controls-form > :last-child {
+        grid-column: 1 / -1;
+    }
+
+    .dashboard-tabs {
+        padding: 0 0.25rem;
+    }
+
+    .dashboard-tab {
+        flex: 1;
+        min-width: 0;
+
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+
+        white-space: normal;
+    }
+
+    .dashboard-tab-content {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .anime-controls-form {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .dashboard-layout {
+        padding: 0.75rem;
+    }
+
+    .dashboard-tab-content {
+        padding: 0.875rem;
+    }
+}

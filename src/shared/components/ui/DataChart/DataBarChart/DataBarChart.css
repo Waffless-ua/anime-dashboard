@@ -1,0 +1,69 @@
+.data-bar-chart {
+    --chart-color-1: #8b5cf6;
+    --chart-color-2: #10b981;
+    --chart-color-3: #3b82f6;
+    --chart-color-4: #f59e0b;
+    --chart-color-5: #ef4444;
+
+    width: 100%;
+    min-width: 0;
+}
+
+.data-bar-chart .recharts-responsive-container {
+    min-width: 0;
+}
+
+.data-bar-chart .recharts-cartesian-grid line {
+    stroke: var(--border-color);
+}
+
+.data-bar-chart .recharts-cartesian-axis-tick-value {
+    fill: var(--text-color);
+    font-size: 0.75rem;
+    font-family: inherit;
+}
+
+.data-bar-chart .recharts-cartesian-axis-line {
+    stroke: var(--border-color);
+}
+
+.data-bar-chart .recharts-bar-rectangle {
+    transition: opacity 0.2s ease;
+}
+
+.data-bar-chart .recharts-bar-rectangle:hover {
+    opacity: 0.85;
+}
+
+.data-bar-chart-tooltip {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    padding: 0.75rem 1rem;
+
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.data-bar-chart-tooltip strong {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.data-bar-chart-tooltip span {
+    font-size: 0.8rem;
+}
+
+[data-theme='dark'] .data-bar-chart {
+    --chart-color-1: #a78bfa;
+    --chart-color-2: #34d399;
+    --chart-color-3: #60a5fa;
+    --chart-color-4: #fbbf24;
+    --chart-color-5: #f87171;
+}

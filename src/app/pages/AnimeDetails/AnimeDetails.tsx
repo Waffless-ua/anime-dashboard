@@ -7,6 +7,7 @@ import RequestBoundary from '../../../shared/components/ui/RequestBoundary/Reque
 
 import './AnimeDetails.css';
 import Button from "../../../shared/components/ui/Button/Button.tsx";
+import FavoriteButton from "../../../features/favorites/components/FavoriteButton/FavoriteButton.tsx";
 
 export default function AnimeDetails() {
     const { id } = useParams();
@@ -15,8 +16,13 @@ export default function AnimeDetails() {
 
     return (
         <main className="dashboard-layout anime-details-page">
-            <Button variant={"secondary"} onClick={() => navigate(-1)}>
-                ← Назад
+            <Button
+                variant="secondary"
+                className="anime-details-back"
+                onClick={() => navigate(-1)}
+            >
+                <span aria-hidden="true">←</span>
+                Назад
             </Button>
 
             <RequestBoundary
@@ -29,13 +35,17 @@ export default function AnimeDetails() {
                 {anime && (
                     <>
                         <article className="anime-details">
-                            {anime.attributes.posterImage?.small && (
-                                <img
-                                    className="anime-details-poster"
-                                    src={anime.attributes.posterImage.small}
-                                    alt={anime.attributes.canonicalTitle}
-                                />
-                            )}
+                            <div className="anime-details-media">
+                                {anime.attributes.posterImage?.small && (
+                                    <img
+                                        className="anime-details-poster"
+                                        src={anime.attributes.posterImage.small}
+                                        alt={anime.attributes.canonicalTitle}
+                                    />
+                                )}
+
+                                <FavoriteButton animeId={anime.id} />
+                            </div>
 
                             <div className="anime-details-content">
                                 <h1>{anime.attributes.canonicalTitle}</h1>

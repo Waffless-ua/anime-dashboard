@@ -1,3 +1,8 @@
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import {
+    changeLimit,
+    selectAnimeFilters,
+} from '../../store/animeQuerySlice';
 import {
     ANIME_PAGE_SIZE_MIN,
     ANIME_PAGE_SIZE_MAX,
@@ -7,17 +12,21 @@ import Counter from '../../../../shared/components/ui/Counter/Counter';
 
 import './AnimeFilters.css';
 
-interface AnimePageSizeFilterProps {
-    value: number;
-    onChange: (value: number) => void;
-}
+export default function AnimePageSizeFilter() {
+    const dispatch = useAppDispatch();
+    const limit = useAppSelector(
+        state => selectAnimeFilters(state).limit
+    );
 
-export default function AnimePageSizeFilter({ value, onChange }: AnimePageSizeFilterProps) {
+    function changePageSize(value: number) {
+        dispatch(changeLimit(value));
+    }
+
     return (
         <Counter
             label="Аніме на сторінці:"
-            value={value}
-            onChange={onChange}
+            value={limit}
+            onChange={changePageSize}
             min={ANIME_PAGE_SIZE_MIN}
             max={ANIME_PAGE_SIZE_MAX}
         />

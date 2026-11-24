@@ -61,6 +61,27 @@
     font-weight: 600;
 }
 
+.anime-details-media {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    flex-shrink: 0;
+    width: 240px;
+    max-width: 100%;
+}
+
+.anime-details-media > .favorite-button {
+    width: 100%;
+}
+
+.anime-details-back {
+    align-self: flex-start;
+    width: fit-content;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+}
+
 @media (max-width: 760px) {
     .anime-details {
         flex-direction: column;
@@ -72,3 +93,4 @@
         width: 100%;
     }
 }
+
