@@ -1,25 +1,23 @@
-import { useCallback, useState } from 'react';
+export function usePagination(
+    page: number,
+    onChange: (page: number) => void,
+    totalItems: number,
+    pageSize: number,
+) {
+    function changePage(nextPage: number) {
+        if (!Number.isInteger(nextPage) || nextPage < 1) return;
 
-const FIRST_PAGE = 1;
+        onChange(nextPage);
+    }
 
-export function usePagination() {
-    const [page, setPage] = useState(FIRST_PAGE);
-
-    const changePage = useCallback((nextPage: number) => {
-        if (!Number.isInteger(nextPage) || nextPage < FIRST_PAGE) {
-            return;
-        }
-
-        setPage(nextPage);
-    }, []);
-
-    const resetPage = useCallback(() => {
-        setPage(FIRST_PAGE);
-    }, []);
+    function resetPage() {
+        onChange(1);
+    }
 
     return {
         page,
-        pageIndex: page - FIRST_PAGE,
+        pageIndex: page - 1,
+        hasNextPage: page * pageSize < totalItems,
         changePage,
         resetPage,
     };

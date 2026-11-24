@@ -1,6 +1,3 @@
-import { useController } from 'react-hook-form';
-
-import { useAnimeFilters } from '../../hooks/useAnimeFilters';
 import {
     ANIME_PAGE_SIZE_MIN,
     ANIME_PAGE_SIZE_MAX,
@@ -10,19 +7,17 @@ import Counter from '../../../../shared/components/ui/Counter/Counter';
 
 import './AnimeFilters.css';
 
-export default function AnimePageSizeFilter() {
-    const { control } = useAnimeFilters();
+interface AnimePageSizeFilterProps {
+    value: number;
+    onChange: (value: number) => void;
+}
 
-    const { field } = useController({
-        name: 'limit',
-        control,
-    });
-
+export default function AnimePageSizeFilter({ value, onChange }: AnimePageSizeFilterProps) {
     return (
         <Counter
             label="Аніме на сторінці:"
-            value={field.value}
-            onChange={field.onChange}
+            value={value}
+            onChange={onChange}
             min={ANIME_PAGE_SIZE_MIN}
             max={ANIME_PAGE_SIZE_MAX}
         />

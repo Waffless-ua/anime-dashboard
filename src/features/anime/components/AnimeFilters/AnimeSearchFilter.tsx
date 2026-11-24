@@ -1,21 +1,16 @@
-import { useController } from 'react-hook-form';
-
-import { useAnimeFilters } from '../../hooks/useAnimeFilters';
-
 import './AnimeFilters.css';
 
-export default function AnimeSearchFilter() {
-    const { control } = useAnimeFilters();
+interface AnimeSearchFilterProps {
+    value: string;
+    onChange: (value: string) => void;
+}
 
-    const { field } = useController({
-        name: 'filter.text',
-        control,
-    });
-
+export default function AnimeSearchFilter({ value, onChange }: AnimeSearchFilterProps) {
     return (
         <div className="anime-filter-field">
             <input
-                {...field}
+                value={value}
+                onChange={event => onChange(event.currentTarget.value)}
                 type="search"
                 aria-label="Пошук аніме за назвою"
                 placeholder="Введіть назву аніме"

@@ -1,23 +1,19 @@
-import { useController } from 'react-hook-form';
-
-import { useAnimeFilters } from '../../hooks/useAnimeFilters';
 import { ANIME_STATUS_OPTIONS } from '../../constants/anime.constants';
 
 import Select from '../../../../shared/components/ui/Select/Select';
 
 import './AnimeFilters.css';
 
-export default function AnimeStatusFilter() {
-    const { control } = useAnimeFilters();
+interface AnimeStatusFilterProps {
+    value: string;
+    onChange: (value: string) => void;
+}
 
-    const { field } = useController({
-        name: 'filter.status',
-        control,
-    });
-
+export default function AnimeStatusFilter({ value, onChange }: AnimeStatusFilterProps) {
     return (
         <Select
-            {...field}
+            value={value}
+            onChange={onChange}
             label="Статус"
             options={ANIME_STATUS_OPTIONS}
         />

@@ -1,66 +1,70 @@
 import { useCallback } from 'react';
 
 import { fetchAnime } from '../api/animeApi';
-import { useAnimeFilters } from './useAnimeFilters';
-
 import { useAsyncResource } from '../../../shared/hooks/useAsyncResource';
+
+import type { AnimeFilters } from '../types/animeFilters.types';
 import type { RequestState } from '../../../shared/types/async.types';
 
-export function useAnime() {
-    const {
-        debouncedQuery,
-        page,
-        pageIndex,
-    } = useAnimeFilters();
-
-    const queryKey = JSON.stringify(debouncedQuery);
+export function useAnime(filters: AnimeFilters, page: number) {
+    const queryKey = JSON.stringify({ filters, page });
 
     const loadAnime = useCallback(
         async (signal: AbortSignal) => {
+            const { filters, page }: {
+                filters: AnimeFilters;
+                page: number;
+            } = JSON.parse(queryKey);
+
             const result = await fetchAnime(
                 {
-                    ...debouncedQuery,
-                    offset: pageIndex * debouncedQuery.limit,
+                    ...filters,
+                    offset: (page - 1) * filters.limit,
                 },
                 signal
             );
 
-            return {
-                ...result,
-                queryKey,
-                page,
-            };
+            return { ...result, queryKey };
         },
-        [debouncedQuery, queryKey, page, pageIndex]
+        [queryKey]
     );
 
     const { data, ...resource } = useAsyncResource(loadAnime);
 
-    const currentData =
-        data?.queryKey === queryKey && data?.page === page
-            ? data
-            : null;
+    if (data && data.queryKey === queryKey) {
+        if (resource.status === 'success') {
+            return {
+                request: resource,
+                anime: data.anime,
+                totalAnime: data.totalAnime,
+            };
+        }
 
-    const request: RequestState =
-        resource.status === 'success' && currentData === null
-            ? {
-                ...resource,
-                status: 'loading',
-                loading: true,
-                error: null,
-            }
-            : resource;
+        return {
+            request: resource,
+            anime: data.anime,
+            totalAnime: 0,
+        };
+    }
 
-    const anime = currentData?.anime ?? [];
-    const totalAnime = currentData?.totalAnime ?? 0;
+    if (resource.status === 'success') {
+        const request: RequestState = {
+            ...resource,
+            status: 'loading',
+            loading: true,
+            error: null,
+        };
 
-    const hasNextPage =
-        request.status === 'success' &&
-        page * debouncedQuery.limit < totalAnime;
+        return {
+            request,
+            anime: [],
+            totalAnime: 0,
+        };
+    }
 
     return {
-        request,
-        anime,
-        hasNextPage,
+        request: resource,
+        anime: [],
+        totalAnime: 0,
     };
 }

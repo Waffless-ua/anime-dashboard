@@ -5,6 +5,7 @@ import RequestBoundary from '../../../../shared/components/ui/RequestBoundary/Re
 import PagePaginator from "../../../../shared/components/ui/PagePaginator/PagePaginator.tsx";
 
 import './AnimeEpisodes.css';
+import { EPISODES_PAGE_SIZE } from "../../constants/animeDetails.constants.ts";
 
 interface AnimeEpisodesProps {
     animeId: string;
@@ -17,7 +18,7 @@ export default function AnimeEpisodes({ animeId }: AnimeEpisodesProps) {
 
     const {
         episodes,
-        hasNextPage,
+        totalEpisodes,
         request,
     } = useAnimeEpisodes(animeId, page);
 
@@ -74,10 +75,10 @@ export default function AnimeEpisodes({ animeId }: AnimeEpisodesProps) {
 
             <PagePaginator
                 page={page}
-                hasNextPage={request.status === 'success' && hasNextPage}
                 onChange={setPage}
+                totalItems={request.status === 'success' ? totalEpisodes : 0}
+                pageSize={EPISODES_PAGE_SIZE}
                 label="Сторінки списку серій"
-                page_step={1}
             />
         </section>
     );

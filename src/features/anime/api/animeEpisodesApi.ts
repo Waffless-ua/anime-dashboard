@@ -8,8 +8,7 @@ import {
     getNullableText,
     getPositiveNumber,
 } from '../utils/apiValues';
-
-export const EPISODES_PAGE_SIZE = 20;
+import { EPISODES_PAGE_SIZE } from "../constants/animeDetails.constants.ts";
 
 const API_BASE_URL = import.meta.env.VITE_KITSU_API_URL;
 
@@ -81,11 +80,17 @@ export async function fetchAnimeEpisodes(
         throw new Error('Некоректна відповідь API зі списком серій.');
     }
 
+    if (
+        !isRecord(payload.meta) ||
+        typeof payload.meta.count !== 'number' ||
+        !Number.isSafeInteger(payload.meta.count) ||
+        payload.meta.count < 0
+    ) {
+        throw new Error('API не повернув загальну кількість серій.');
+    }
+
     return {
         episodes: payload.data.map(parseEpisode),
-        hasNextPage:
-            isRecord(payload.links) &&
-            typeof payload.links.next === 'string' &&
-            payload.links.next.length > 0,
+        totalEpisodes: payload.meta.count,
     };
 }

@@ -1,21 +1,17 @@
-import { useController } from 'react-hook-form';
-
-import { useAnimeFilters } from '../../hooks/useAnimeFilters';
 import { DIRECTION_OPTIONS } from '../../constants/anime.constants';
 
 import Select from '../../../../shared/components/ui/Select/Select';
 
-export default function AnimeSortDirection() {
-    const { control } = useAnimeFilters();
+interface AnimeSortDirectionProps {
+    value: string;
+    onChange: (value: string) => void;
+}
 
-    const { field } = useController({
-        name: 'direction',
-        control,
-    });
-
+export default function AnimeSortDirection({ value, onChange }: AnimeSortDirectionProps) {
     return (
         <Select
-            {...field}
+            value={value}
+            onChange={onChange}
             label="Напрямок"
             options={DIRECTION_OPTIONS}
         />
