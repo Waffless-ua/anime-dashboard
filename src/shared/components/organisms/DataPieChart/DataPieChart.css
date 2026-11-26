@@ -1,0 +1,39 @@
+.data-pie-chart {
+
+    width: 100%;
+    min-width: 0;
+}
+
+.data-pie-chart .recharts-responsive-container {
+    min-width: 0;
+}
+
+.data-pie-chart .recharts-pie-sector {
+    transition: opacity var(--motion-fast) ease;
+}
+
+.data-pie-chart .recharts-pie-sector:hover {
+    opacity: var(--opacity-hover);
+}
+
+.data-pie-chart-total {
+    fill: var(--text-color);
+
+    font-size: var(--font-size-heading);
+    font-weight: var(--font-weight-bold);
+    font-variant-numeric: tabular-nums;
+
+    pointer-events: none;
+}
+
+.data-pie-chart-legend {
+    color: var(--text-color);
+
+    font-size: var(--font-size-compact);
+    line-height: var(--line-height-body);
+}
+
+.data-pie-chart .recharts-legend-item {
+    padding: var(--space-1) 0;
+}
+

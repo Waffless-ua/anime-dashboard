@@ -1,23 +1,24 @@
 import { useAnimeStats } from '../../hooks/useAnimeStats';
 
-import KpiCard from '../../../../shared/components/ui/KpiCard/KpiCard';
-import Button from '../../../../shared/components/ui/Button/Button';
+import type { AnimeFilterValues } from '../../types/animeFilters.types';
+
+import KpiCard from '../../../../shared/components/molecules/KpiCard/KpiCard';
+import Button from '../../../../shared/components/atoms/Button/Button';
 
 import getChangePrefix from '../../../../shared/utils/getChangePrefix';
 import getChangeStatus from '../../../../shared/utils/getChangeStatus';
 
 import './AnimeStats.css';
-import { useAppSelector } from "../../../../app/hooks.ts";
-import { selectAnimeFilters } from "../../store/animeQuerySlice.ts";
-import { useDebounce } from "../../../../shared/hooks/useDebounce.ts";
 
+interface AnimeStatsProps {
+    filter: AnimeFilterValues;
+    isPending: boolean;
+}
 
-export default function AnimeStats() {
-    const filter = useAppSelector(
-        state => selectAnimeFilters(state).filter
-    );
-    const debouncedFilter = useDebounce(filter, 400);
-
+export default function AnimeStats({
+    filter,
+    isPending,
+}: AnimeStatsProps) {
     const {
         status,
         total,
@@ -25,10 +26,12 @@ export default function AnimeStats() {
         mostPopular,
         changes,
         retry,
-    } = useAnimeStats(debouncedFilter);
+    } = useAnimeStats(filter, isPending);
 
     const hasError = status === 'error';
 
+    const topRatedChangeSuffix =
+        typeof changes.topRated === 'number' ? ' п.п.' : '';
 
     return (
         <section className="anime-stats-panel">
@@ -67,11 +70,7 @@ export default function AnimeStats() {
                     value={topRated?.attributes.canonicalTitle}
                     change={changes.topRated}
                     changePrefix={getChangePrefix(changes.topRated)}
-                    changeSuffix={
-                        typeof changes.topRated === 'number'
-                            ? ' п.п.'
-                            : ''
-                    }
+                    changeSuffix={topRatedChangeSuffix}
                     changeStatus={getChangeStatus(changes.topRated)}
                 />
             </div>

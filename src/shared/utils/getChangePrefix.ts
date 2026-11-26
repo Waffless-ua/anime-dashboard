@@ -1,8 +1,13 @@
 export default function getChangePrefix(
-    change: string | number | null,
-    isRank = false
+    change: string | number | null
 ): string {
-    if (typeof change !== 'number') return '';
+    if (typeof change !== 'number') {
+        return '';
+    }
 
-    return (isRank ? change < 0 : change > 0) ? '+' : '';
+    if (change > 0) {
+        return '+';
+    }
+
+    return '';
 }

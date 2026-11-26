@@ -1,14 +1,19 @@
-import type { ChangeStatus } from "../types/kpi.types.ts";
+import type { ChangeStatus } from '../types/kpi.types';
 
 export default function getChangeStatus(
-    change: string | number | null,
-    isRank = false
+    change: string | number | null
 ): ChangeStatus {
-    if (typeof change !== 'number' || change === 0) {
+    if (
+        typeof change !== 'number' ||
+        !Number.isFinite(change) ||
+        change === 0
+    ) {
         return 'neutral';
     }
 
-    const isPositive = isRank ? change < 0 : change > 0;
+    if (change > 0) {
+        return 'positive';
+    }
 
-    return isPositive ? 'positive' : 'negative';
+    return 'negative';
 }

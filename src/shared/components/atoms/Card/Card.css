@@ -1,0 +1,20 @@
+.shared-card {
+    min-width: 0;
+    color: var(--text-color);
+    border: var(--border-width) solid var(--border-color);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    transition: background-color var(--motion-theme) ease, border-color var(--motion-theme) ease, box-shadow var(--motion-fast) ease, transform var(--motion-fast) ease;
+}
+.shared-card--surface { background-color: var(--secondary-color); }
+.shared-card--muted { background-color: var(--tertiary-color); }
+.shared-card--none { padding: 0; }
+.shared-card--sm { padding: var(--space-3); }
+.shared-card--md { padding: var(--space-4); }
+.shared-card--lg { padding: var(--space-6); }
+.shared-card--hoverable:hover, .shared-card--hoverable:focus-within { box-shadow: var(--shadow-card-hover); transform: translateY(var(--card-hover-offset)); }
+.shared-card--hoverable.shared-card--muted:hover { background-color: var(--tertiary-hover); }
+@media (prefers-reduced-motion: reduce) {
+    .shared-card { transition: none; }
+    .shared-card--hoverable:hover, .shared-card--hoverable:focus-within { transform: none; }
+}

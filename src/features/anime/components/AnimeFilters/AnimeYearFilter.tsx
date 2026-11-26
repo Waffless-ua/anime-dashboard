@@ -1,35 +1,38 @@
-import { useId } from 'react';
+import Input from '../../../../shared/components/atoms/Input/Input';
+import FormField from '../../../../shared/components/molecules/FormField/FormField';
 
-import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
-import { changeFilter, selectAnimeFilters, } from '../../store/animeQuerySlice';
-import { FIRST_ANIME_YEAR, LAST_ANIME_YEAR, } from '../../constants/anime.constants';
+import {
+    FIRST_ANIME_YEAR,
+    LAST_ANIME_YEAR,
+} from '../../constants/anime.constants';
+
+import { useAnimeFilter } from '../../hooks/useAnimeFilter';
+import { getAnimeYearError } from '../../utils/animeValidation';
 
 import './AnimeFilters.css';
 
 export default function AnimeYearFilter() {
-    const yearId = useId();
-    const dispatch = useAppDispatch();
-    const year = useAppSelector(
-        state => selectAnimeFilters(state).filter.seasonYear
-    );
+    const { value, onChange } = useAnimeFilter('seasonYear');
 
-    function changeYear(value: string) {
-        dispatch(changeFilter({ name: 'seasonYear', value }));
-    }
+    const error = getAnimeYearError(value);
 
     return (
-        <div className="anime-filter-field anime-year-field">
-            <label htmlFor={yearId}>Рік</label>
-
-            <input
-                value={year}
-                onChange={event => changeYear(event.currentTarget.value)}
-                id={yearId}
-                type="number"
-                min={FIRST_ANIME_YEAR}
-                max={LAST_ANIME_YEAR}
-                placeholder="Всі роки"
-            />
-        </div>
+        <FormField
+            label="Рік"
+            className="anime-filter-field anime-year-field"
+            error={error}
+        >
+            {controlProps => (
+                <Input
+                    {...controlProps}
+                    value={value}
+                    onChange={event => onChange(event.currentTarget.value)}
+                    type="number"
+                    min={FIRST_ANIME_YEAR}
+                    max={LAST_ANIME_YEAR}
+                    placeholder="Всі роки"
+                />
+            )}
+        </FormField>
     );
 }

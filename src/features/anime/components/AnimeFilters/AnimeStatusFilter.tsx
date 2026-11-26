@@ -1,25 +1,17 @@
 import { ANIME_STATUS_OPTIONS } from '../../constants/anime.constants';
 
-import Select from '../../../../shared/components/ui/Select/Select';
+import Select from '../../../../shared/components/molecules/Select/Select';
 
 import './AnimeFilters.css';
-import { useAppDispatch, useAppSelector } from "../../../../app/hooks.ts";
-import { changeFilter, selectAnimeFilters } from "../../store/animeQuerySlice.ts";
+import { useAnimeFilter } from "../../hooks/useAnimeFilter.ts";
 
 export default function AnimeStatusFilter() {
-    const dispatch = useAppDispatch();
-    const status = useAppSelector(
-        state => selectAnimeFilters(state).filter.status
-    );
-
-    function changeStatus(value: string) {
-        dispatch(changeFilter({ name: 'status', value }));
-    }
+    const { value, onChange } = useAnimeFilter('status');
 
     return (
         <Select
-            value={status}
-            onChange={changeStatus}
+            value={value}
+            onChange={onChange}
             label="Статус"
             options={ANIME_STATUS_OPTIONS}
         />

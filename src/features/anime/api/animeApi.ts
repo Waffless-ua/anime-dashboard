@@ -1,30 +1,57 @@
-import { ANIME_PAGE_SIZE_MAX, ANIME_PAGE_SIZE_MIN, DEFAULT_SORT_DIRECTION } from '../constants/anime.constants';
+import {
+    ANIME_PAGE_SIZE_MAX,
+    ANIME_PAGE_SIZE_MIN,
+    DEFAULT_SORT_DIRECTION,
+} from '../constants/anime.constants';
 
 import type {
     AnimeQuery,
     AnimeApiResult,
 } from '../types/animeApi.types';
 
-import isAnime from '../utils/isAnime';
 import type { AnimeDetailsData } from '../types/animeDetails.types';
+
+import isAnime from '../utils/isAnime';
 
 import {
     getNullableText,
-    getPositiveNumber, isRecord,
+    getPositiveNumber,
+    isRecord,
 } from '../utils/apiValues';
+
+import {
+    getAnimeYearError,
+    isValidAnimePageSize,
+} from '../utils/animeValidation';
 
 const API_BASE_URL = import.meta.env.VITE_KITSU_API_URL;
 
 const DEFAULT_OFFSET = 0;
+const HTTP_STATUS_NOT_FOUND = 404;
 
-export async function fetchAnime(
-    query: AnimeQuery = {},
-    signal?: AbortSignal
-): Promise<AnimeApiResult> {
+function createKitsuUrl(path: string): URL {
     if (!API_BASE_URL) {
         throw new Error('Kitsu API URL is not configured');
     }
 
+    const baseUrl = API_BASE_URL.replace(/\/+$/, '');
+
+    return new URL(`${baseUrl}${path}`);
+}
+
+function fetchKitsu(
+    url: URL,
+    signal?: AbortSignal
+): Promise<Response> {
+    return fetch(url.toString(), {
+        headers: {
+            Accept: 'application/vnd.api+json',
+        },
+        signal,
+    });
+}
+
+function createAnimeListUrl(query: AnimeQuery): URL {
     const {
         sort,
         direction = DEFAULT_SORT_DIRECTION,
@@ -33,26 +60,28 @@ export async function fetchAnime(
         offset = DEFAULT_OFFSET,
     } = query;
 
-    const hasValidLimit =
-        Number.isInteger(limit) &&
-        limit >= ANIME_PAGE_SIZE_MIN &&
-        limit <= ANIME_PAGE_SIZE_MAX;
-
-    if (!hasValidLimit) {
+    if (!isValidAnimePageSize(limit)) {
         throw new Error(
             `Anime limit must be between ${ANIME_PAGE_SIZE_MIN} and ${ANIME_PAGE_SIZE_MAX}`
         );
     }
 
-    if (!Number.isInteger(offset) || offset < DEFAULT_OFFSET) {
+    const yearError = getAnimeYearError(filter?.seasonYear);
+
+    if (yearError) {
+        throw new Error(yearError);
+    }
+
+    if (!Number.isSafeInteger(offset) || offset < DEFAULT_OFFSET) {
         throw new Error('Anime offset must be a non-negative integer');
     }
 
-    const baseUrl = API_BASE_URL.replace(/\/$/, '');
-    const url = new URL(`${baseUrl}/anime`);
+    const url = createKitsuUrl('/anime');
 
     if (sort) {
-        const sortValue = direction === 'desc' ? `-${sort}` : sort;
+        const sortValue = direction === 'desc'
+            ? `-${sort}`
+            : sort;
 
         url.searchParams.set('sort', sortValue);
     }
@@ -62,10 +91,12 @@ export async function fetchAnime(
     for (const [name, value] of Object.entries(filter ?? {})) {
         const normalizedValue = value?.trim();
 
-        if (normalizedValue) {
-            url.searchParams.set(`filter[${name}]`, normalizedValue);
-            hasActiveFilter = true;
+        if (!normalizedValue) {
+            continue;
         }
+
+        url.searchParams.set(`filter[${name}]`, normalizedValue);
+        hasActiveFilter = true;
     }
 
     // Kitsu can and will return the same results for the first two pages of a filtered query.
@@ -74,25 +105,17 @@ export async function fetchAnime(
         ? offset + limit
         : offset;
 
+    if (!Number.isSafeInteger(apiOffset)) {
+        throw new Error('Invalid API offset');
+    }
 
     url.searchParams.set('page[limit]', String(limit));
     url.searchParams.set('page[offset]', String(apiOffset));
 
-    const response = await fetch(url.toString(), {
-        headers: {
-            Accept: 'application/vnd.api+json',
-        },
-        signal,
-    });
+    return url;
+}
 
-    if (!response.ok) {
-        throw new Error(
-            `Failed to fetch anime: HTTP ${response.status}`
-        );
-    }
-
-    const payload: unknown = await response.json();
-
+function parseAnimeList(payload: unknown): AnimeApiResult {
     if (!isRecord(payload)) {
         throw new Error('Invalid API response');
     }
@@ -122,7 +145,8 @@ export async function fetchAnime(
 
     if (
         typeof totalAnime !== 'number' ||
-        !Number.isFinite(totalAnime)
+        !Number.isSafeInteger(totalAnime) ||
+        totalAnime < 0
     ) {
         throw new Error('Invalid anime total count');
     }
@@ -133,26 +157,60 @@ export async function fetchAnime(
     };
 }
 
+function parseAnimeDetails(payload: unknown): AnimeDetailsData {
+    if (!isRecord(payload) || !isAnime(payload.data)) {
+        throw new Error('Некоректна структура даних аніме.');
+    }
+
+    const anime = payload.data;
+
+    const attributes: Record<string, unknown> = anime.attributes;
+
+    return {
+        ...anime,
+        details: {
+            synopsis: getNullableText(attributes.synopsis),
+            endDate: getNullableText(attributes.endDate),
+            episodeLength: getPositiveNumber(attributes.episodeLength),
+            ageRating: getNullableText(attributes.ageRating),
+            ageRatingGuide: getNullableText(attributes.ageRatingGuide),
+        },
+    };
+}
+
+export async function fetchAnime(
+    query: AnimeQuery = {},
+    signal?: AbortSignal
+): Promise<AnimeApiResult> {
+    const url = createAnimeListUrl(query);
+    const response = await fetchKitsu(url, signal);
+
+    if (!response.ok) {
+        throw new Error(
+            `Failed to fetch anime: HTTP ${response.status}`
+        );
+    }
+
+    const payload: unknown = await response.json();
+
+    return parseAnimeList(payload);
+}
 
 export async function fetchAnimeById(
     id: string,
     signal?: AbortSignal
 ): Promise<AnimeDetailsData> {
-    if (!API_BASE_URL) {
-        throw new Error('API URL is not configured');
+    if (!id.trim()) {
+        throw new Error('Не вказано ID аніме.');
     }
 
-    const baseUrl = API_BASE_URL.replace(/\/$/, '');
-    const url = `${baseUrl}/anime/${encodeURIComponent(id)}`;
+    const url = createKitsuUrl(
+        `/anime/${encodeURIComponent(id)}`
+    );
 
-    const response = await fetch(url, {
-        headers: {
-            Accept: 'application/vnd.api+json',
-        },
-        signal,
-    });
+    const response = await fetchKitsu(url, signal);
 
-    if (response.status === 404) {
+    if (response.status === HTTP_STATUS_NOT_FOUND) {
         throw new Error('Аніме не знайдено.');
     }
 
@@ -164,21 +222,5 @@ export async function fetchAnimeById(
 
     const payload: unknown = await response.json();
 
-    if (!isRecord(payload) || !isAnime(payload.data)) {
-        throw new Error('Некоректна структура даних аніме.');
-    }
-
-    const attributes: Record<string, unknown> =
-        payload.data.attributes;
-
-    return {
-        ...payload.data,
-        details: {
-            synopsis: getNullableText(attributes.synopsis),
-            endDate: getNullableText(attributes.endDate),
-            episodeLength: getPositiveNumber(attributes.episodeLength),
-            ageRating: getNullableText(attributes.ageRating),
-            ageRatingGuide: getNullableText(attributes.ageRatingGuide),
-        },
-    };
+    return parseAnimeDetails(payload);
 }

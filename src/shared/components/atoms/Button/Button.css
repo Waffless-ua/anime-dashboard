@@ -1,0 +1,138 @@
+.shared-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+
+    width: fit-content;
+    max-width: 100%;
+    min-height: var(--control-md);
+    padding: var(--space-2) var(--space-4);
+
+    border-radius: var(--radius-control);
+
+    font-family: inherit;
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-button);
+
+    box-shadow: var(--shadow-button);
+    cursor: pointer;
+
+    transition:
+            background-color var(--motion-theme) ease,
+            border-color var(--motion-theme) ease,
+            box-shadow var(--motion-fast) ease,
+            transform var(--motion-fast) ease;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+.shared-btn:not(:disabled):hover {
+    box-shadow: var(--shadow-button-hover);
+    transform: translateY(var(--hover-offset));
+}
+
+.shared-btn:disabled {
+    opacity: var(--opacity-disabled);
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: var(--border-width) solid var(--border-color);
+}
+
+.btn-primary:not(:disabled):hover {
+    background-color: var(--primary-hover);
+    border-color: var(--border-color);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    border: var(--border-width) solid var(--secondary-color);
+}
+
+.btn-secondary:not(:disabled):hover {
+    background-color: var(--secondary-hover);
+    border-color: var(--secondary-hover);
+}
+
+.btn-tertiary {
+    background-color: var(--tertiary-color);
+    color: var(--text-color);
+    border: var(--border-width) solid var(--tertiary-color);
+}
+
+.btn-tertiary:not(:disabled):hover {
+    background-color: var(--tertiary-hover);
+    border-color: var(--tertiary-hover);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--text-color);
+    border: var(--border-width) solid var(--border-color);
+}
+
+.btn-outline:not(:disabled):hover {
+    background-color: var(--tertiary-hover);
+    border-color: var(--border-color);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: var(--on-danger-color);
+    border: var(--border-width) solid var(--danger-color);
+}
+
+.btn-danger:not(:disabled):hover {
+    background-color: var(--danger-hover);
+    border-color: var(--danger-hover);
+}
+
+.shared-btn--sm {
+    min-height: var(--control-sm);
+    padding: var(--space-1-5) var(--space-3);
+    font-size: var(--font-size-compact);
+}
+
+.shared-btn--lg {
+    min-height: var(--control-lg);
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--font-size-body);
+}
+
+.shared-btn--full {
+    width: 100%;
+}
+
+.shared-btn--icon {
+    width: var(--control-md);
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.shared-btn--icon.shared-btn--sm {
+    width: var(--control-sm);
+}
+
+.shared-btn--icon.shared-btn--lg {
+    width: var(--control-lg);
+}
+
+.shared-btn:focus-visible {
+    outline: var(--focus-width) solid var(--focus-color);
+    outline-offset: var(--focus-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .shared-btn {
+        transition: none;
+    }
+
+    .shared-btn:not(:disabled):hover {
+        transform: none;
+    }
+}

@@ -1,0 +1,8 @@
+.shared-badge { display: inline-flex; align-items: center; max-width: 100%; border-radius: var(--radius-control); font-weight: var(--font-weight-medium); line-height: var(--line-height-label); overflow-wrap: anywhere; }
+.shared-badge--sm { padding: var(--space-badge-y) var(--space-badge-x); font-size: var(--font-size-sm); }
+.shared-badge--md { padding: var(--space-2) var(--space-3); font-size: var(--font-size-label); }
+.shared-badge--neutral { color: var(--text-color); background-color: var(--tertiary-color); }
+.shared-badge--success { color: var(--success-text); background-color: var(--success-soft); }
+.shared-badge--danger { color: var(--danger-text); background-color: var(--danger-soft); }
+.shared-badge--info { color: var(--info-text); background-color: var(--info-soft); }
+.shared-badge--warning { color: var(--warning-text); background-color: var(--warning-soft); }

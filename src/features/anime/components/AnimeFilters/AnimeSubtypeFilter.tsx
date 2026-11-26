@@ -1,26 +1,19 @@
 import { ANIME_SUBTYPE_OPTIONS } from '../../constants/anime.constants';
 
-import Select from '../../../../shared/components/ui/Select/Select';
+import Select from '../../../../shared/components/molecules/Select/Select';
 
 import './AnimeFilters.css';
-import { useAppDispatch, useAppSelector } from "../../../../app/hooks.ts";
-import { changeFilter, selectAnimeFilters } from "../../store/animeQuerySlice.ts";
+import { useAnimeFilter } from "../../hooks/useAnimeFilter.ts";
 
 
 export default function AnimeSubtypeFilter() {
-    const dispatch = useAppDispatch();
-    const status = useAppSelector(
-        state => selectAnimeFilters(state).filter.subtype
-    );
+    const { value, onChange } = useAnimeFilter('subtype');
 
-    function changeStatus(value: string) {
-        dispatch(changeFilter({ name: 'subtype', value }));
-    }
 
     return (
         <Select
-            value={status}
-            onChange={changeStatus}
+            value={value}
+            onChange={onChange}
             label="Тип"
             options={ANIME_SUBTYPE_OPTIONS}
         />

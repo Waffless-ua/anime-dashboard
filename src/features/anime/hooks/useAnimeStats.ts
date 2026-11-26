@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback } from 'react';
 
 import { useAsyncResource } from '../../../shared/hooks/useAsyncResource';
-import { useLocalStorage } from '../../../shared/hooks/useLocalStorage';
 
 import {
     fetchAnimeTotal,
@@ -9,132 +8,43 @@ import {
     fetchMostPopularAnime,
 } from '../api/animeKpiApi';
 
-import {
-    ANIME_KPI_STORAGE_KEY,
-    EMPTY_KPI_CHANGES,
-} from '../constants/anime.constants';
+import type { AnimeFilterValues } from '../types/animeFilters.types';
+import type { AnimeStatsResult } from '../types/animeKpi.types';
 
-import type { Anime } from '../types/anime.types';
-import type { AnimeQuery } from '../types/animeApi.types';
-import type {
-    AnimeKpiSnapshot,
-    AnimeKpiChanges,
-} from '../types/animeKpi.types';
+import { useAnimeKpiComparison } from './useAnimeKpiComparison';
 
-import { createAnimeKpiSnapshot } from '../services/createAnimeKpiSnapshot';
-import { calculateAnimeKpiChanges } from '../services/calculateAnimeKpiChanges';
-
-interface AnimeStatsResult {
-    filterKey: string;
-    total: number;
-    topRated: Anime | null;
-    mostPopular: Anime | null;
-}
-
-interface StatsComparison {
-    result: AnimeStatsResult | null;
-    changes: AnimeKpiChanges;
-}
-
-export function useAnimeStats(filter: AnimeQuery['filter']) {
-    const filterKey = JSON.stringify(filter ?? {});
-
+export function useAnimeStats(
+    filter: AnimeFilterValues,
+    isPending: boolean
+) {
     const loadStats = useCallback(
         async (signal: AbortSignal): Promise<AnimeStatsResult> => {
-            const currentFilter: AnimeQuery['filter'] =
-                JSON.parse(filterKey);
-
             const [total, topRated, mostPopular] = await Promise.all([
-                fetchAnimeTotal(currentFilter, signal),
-                fetchTopRatedAnime(currentFilter, signal),
-                fetchMostPopularAnime(currentFilter, signal),
+                fetchAnimeTotal(filter, signal),
+                fetchTopRatedAnime(filter, signal),
+                fetchMostPopularAnime(filter, signal),
             ]);
 
             return {
-                filterKey,
                 total,
                 topRated,
                 mostPopular,
             };
         },
-        [filterKey]
+        [filter]
     );
 
-    const request = useAsyncResource(loadStats);
+    const request = useAsyncResource(
+        isPending ? null : loadStats
+    );
 
-    const [savedSnapshot, setSavedSnapshot] =
-        useLocalStorage<AnimeKpiSnapshot | null>(
-            ANIME_KPI_STORAGE_KEY,
-            null
-        );
-
-    const [comparison, setComparison] = useState<StatsComparison>({
-        result: null,
-        changes: EMPTY_KPI_CHANGES,
-    });
-
-    const processedResult = useRef<AnimeStatsResult | null>(null);
-
-    useEffect(() => {
-        if (request.status !== 'success') {
-            return;
-        }
-
-        const result = request.data;
-
-        if (
-            result.filterKey !== filterKey ||
-            processedResult.current === result
-        ) {
-            return;
-        }
-
-        processedResult.current = result;
-
-        const currentSnapshot = createAnimeKpiSnapshot(
-            result.total,
-            result.mostPopular,
-            result.topRated
-        );
-
-        setComparison({
-            result,
-            changes: calculateAnimeKpiChanges(
-                currentSnapshot,
-                savedSnapshot
-            ),
-        });
-
-        setSavedSnapshot(currentSnapshot);
-    }, [
-        request.status,
-        request.data,
-        filterKey,
-        savedSnapshot,
-        setSavedSnapshot,
-    ]);
-
-    const currentData =
-        request.data?.filterKey === filterKey
-            ? request.data
-            : null;
-
-    const currentStatus =
-        request.status === 'success' && currentData === null
-            ? 'loading'
-            : request.status;
-
-    const changes =
-        currentStatus === 'success' &&
-        comparison.result === currentData
-            ? comparison.changes
-            : EMPTY_KPI_CHANGES;
+    const changes = useAnimeKpiComparison(request.data);
 
     return {
-        status: currentStatus,
-        total: currentData?.total ?? null,
-        topRated: currentData?.topRated ?? null,
-        mostPopular: currentData?.mostPopular ?? null,
+        status: request.status,
+        total: request.data?.total ?? null,
+        topRated: request.data?.topRated ?? null,
+        mostPopular: request.data?.mostPopular ?? null,
         changes,
         retry: request.reload,
     };

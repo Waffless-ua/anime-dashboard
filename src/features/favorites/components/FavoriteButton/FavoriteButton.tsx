@@ -4,7 +4,7 @@ import {
     toggleFavorite,
 } from '../../store/favoritesSlice';
 
-import Button from '../../../../shared/components/ui/Button/Button';
+import Button from '../../../../shared/components/atoms/Button/Button';
 
 import './FavoriteButton.css';
 
@@ -27,6 +27,7 @@ export default function FavoriteButton({ animeId }: FavoriteButtonProps) {
             variant={isFavorite ? 'primary' : 'outline'}
             className="favorite-button"
             onClick={handleToggle}
+            fullWidth={true}
         >
             {isFavorite ? '♥ Прибрати з обраного' : '♡ Додати в обране'}
         </Button>

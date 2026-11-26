@@ -1,12 +1,10 @@
 .app-theme {
-  --theme-duration: 0.3s;
-
   min-height: 100vh;
 
   color: var(--text-color);
   background-color: var(--bg-color);
 
   transition:
-          background-color var(--theme-duration) ease,
-          color var(--theme-duration) ease;
+          background-color var(--motion-theme) ease,
+          color var(--motion-theme) ease;
 }

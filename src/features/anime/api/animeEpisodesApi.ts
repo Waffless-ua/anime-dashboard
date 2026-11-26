@@ -9,6 +9,7 @@ import {
     getPositiveNumber,
 } from '../utils/apiValues';
 import { EPISODES_PAGE_SIZE } from "../constants/animeDetails.constants.ts";
+import { getPageOffset } from "../../../shared/utils/getPageOffset.ts";
 
 const API_BASE_URL = import.meta.env.VITE_KITSU_API_URL;
 
@@ -50,7 +51,7 @@ export async function fetchAnimeEpisodes(
     url.searchParams.set('page[limit]', String(EPISODES_PAGE_SIZE));
     url.searchParams.set(
         'page[offset]',
-        String((page - 1) * EPISODES_PAGE_SIZE)
+        String(getPageOffset(page, EPISODES_PAGE_SIZE))
     );
 
     const response = await fetch(url, {

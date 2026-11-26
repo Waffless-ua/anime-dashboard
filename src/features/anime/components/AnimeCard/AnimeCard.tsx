@@ -1,3 +1,5 @@
+import Card from '../../../../shared/components/atoms/Card/Card';
+import Badge from '../../../../shared/components/atoms/Badge/Badge';
 import { Link } from 'react-router';
 
 import type { Anime } from '../../types/anime.types';
@@ -6,6 +8,7 @@ import { getAnimeStatusLabel } from '../../utils/getAnimeStatusLabel';
 
 import './AnimeCard.css';
 import type { ReactNode } from "react";
+import { getAnimeStatusVariant } from "../../utils/getAnimeStatusVariant.ts";
 
 interface AnimeCardProps {
     anime: Anime;
@@ -23,7 +26,7 @@ export default function AnimeCard({ anime, children }: AnimeCardProps) {
     } = anime.attributes;
 
     return (
-        <li className="anime-card">
+        <Card as="li" variant="muted" hoverable className="anime-card">
             {posterImage?.small && (
                 <img
                     src={posterImage.small}
@@ -49,7 +52,10 @@ export default function AnimeCard({ anime, children }: AnimeCardProps) {
                 </p>
 
                 <p>
-                    📌 Статус: {getAnimeStatusLabel(status)}
+                    📌 Статус:
+                    <Badge variant={getAnimeStatusVariant(status)}>
+                        {getAnimeStatusLabel(status)}
+                    </Badge>
                 </p>
 
                 <p>
@@ -57,6 +63,6 @@ export default function AnimeCard({ anime, children }: AnimeCardProps) {
                 </p>
             </div>
             {children}
-        </li>
+        </Card>
     );
 }

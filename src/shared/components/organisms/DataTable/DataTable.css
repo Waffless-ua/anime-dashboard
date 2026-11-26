@@ -1,0 +1,61 @@
+.data-table-container {
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+}
+
+.data-table-container:focus-visible {
+    outline: var(--focus-width) solid var(--focus-color);
+    outline-offset: var(--focus-offset);
+    border-radius: var(--radius-control);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    font-size: var(--font-size-label);
+    line-height: var(--line-height-body);
+    text-align: left;
+
+    color: var(--text-color);
+}
+
+.data-table__caption {
+    padding-bottom: var(--space-4);
+    text-align: left;
+    font-weight: var(--font-weight-medium);
+}
+
+.data-table th,
+.data-table td {
+    border-bottom: var(--border-width) solid var(--border-color);
+    vertical-align: top;
+}
+
+.data-table--comfortable th,
+.data-table--comfortable td {
+    padding: var(--space-3) var(--space-4);
+}
+
+.data-table--compact th,
+.data-table--compact td {
+    padding: var(--space-2) var(--space-3);
+}
+
+.data-table th {
+    background-color: var(--tertiary-color);
+    font-weight: var(--font-weight-medium);
+}
+
+.data-table--striped tbody tr:nth-child(even) {
+    background-color: var(--tertiary-color);
+}
+
+.data-table__cell--nowrap {
+    white-space: nowrap;
+}
+
+.data-table__empty {
+    text-align: center;
+}

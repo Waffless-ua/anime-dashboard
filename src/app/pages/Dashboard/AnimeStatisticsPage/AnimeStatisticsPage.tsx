@@ -1,32 +1,59 @@
 import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { selectChartType, setChartType } from '../../../../features/anime/store/animeChartSlice';
 
+import {
+    selectChartType,
+    setChartType,
+} from '../../../../features/anime/store/animeChartSlice';
+
+import { selectAnimeFilters } from '../../../../features/anime/store/animeQuerySlice';
+
+import { useDebounce } from '../../../../shared/hooks/useDebounce';
 import { useAnimeChart } from '../../../../features/anime/hooks/useAnimeChart';
 
-import ChartTypeSelect from '../../../../shared/components/ui/ChartTypeSelect/ChartTypeSelect';
-import RequestBoundary from '../../../../shared/components/ui/RequestBoundary/RequestBoundary';
+import AnimeStats from '../../../../features/anime/components/AnimeStats/AnimeStats';
 
-import DataBarChart from '../../../../shared/components/ui/DataChart/DataBarChart/DataBarChart';
-import DataPieChart from '../../../../shared/components/ui/DataChart/DataPieChart/DataPieChart';
+import ChartTypeSelect from '../../../../shared/components/molecules/ChartTypeSelect/ChartTypeSelect';
+import RequestBoundary from '../../../../shared/components/molecules/RequestBoundary/RequestBoundary';
+
+import DataBarChart from '../../../../shared/components/organisms/DataBarChart/DataBarChart';
+import DataPieChart from '../../../../shared/components/organisms/DataPieChart/DataPieChart';
+
+import { CHART_TOKENS } from '../../../../shared/styles/chart.tokens';
 
 import './AnimeStatisticsPage.css';
-import AnimeStats from "../../../../features/anime/components/AnimeStats/AnimeStats.tsx";
-
-const CHART_HEIGHT = 500;
 
 export default function AnimeStatisticsPage() {
     const dispatch = useAppDispatch();
+
     const type = useAppSelector(selectChartType);
 
-    const { points, request } = useAnimeChart();
+    const filter = useAppSelector(
+        state => selectAnimeFilters(state).filter
+    );
+
+    const debouncedFilter = useDebounce(filter);
+
+    const isPending = filter !== debouncedFilter;
+
+    const { points, request } = useAnimeChart(
+        debouncedFilter,
+        isPending
+    );
 
     const ChartComponent = type === 'pie'
         ? DataPieChart
         : DataBarChart;
 
+    function handleChartTypeChange(value: typeof type) {
+        dispatch(setChartType(value));
+    }
+
     return (
         <section className="anime-statistics-page">
-            <AnimeStats />
+            <AnimeStats
+                filter={debouncedFilter}
+                isPending={isPending}
+            />
 
             <section className="anime-chart-panel">
                 <div className="anime-chart-header">
@@ -43,13 +70,13 @@ export default function AnimeStatisticsPage() {
                     <ChartComponent
                         data={points}
                         valueLabel="Кількість аніме"
-                        height={CHART_HEIGHT}
+                        height={CHART_TOKENS.height}
                     />
                 </RequestBoundary>
 
                 <ChartTypeSelect
                     value={type}
-                    onChange={value => dispatch(setChartType(value))}
+                    onChange={handleChartTypeChange}
                 />
             </section>
         </section>
