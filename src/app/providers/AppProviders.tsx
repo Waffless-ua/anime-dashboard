@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 
-import { store } from '../store';
+import { persistor, store } from '../store';
 
 interface AppProvidersProps {
     children: ReactNode;
@@ -10,7 +11,9 @@ interface AppProvidersProps {
 export default function AppProviders({ children }: AppProvidersProps) {
     return (
         <Provider store={store}>
-            {children}
+            <PersistGate loading={null} persistor={persistor}>
+                {children}
+            </PersistGate>
         </Provider>
     );
 }
