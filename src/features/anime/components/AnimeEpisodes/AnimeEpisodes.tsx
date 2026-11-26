@@ -1,17 +1,21 @@
 import { useState } from 'react';
-import { useAnimeEpisodes } from '../../hooks/useAnimeEpisodes';
 
-import RequestBoundary from '../../../../shared/components/ui/RequestBoundary/RequestBoundary';
-import PagePaginator from "../../../../shared/components/ui/PagePaginator/PagePaginator.tsx";
+import { useAnimeEpisodes } from '../../hooks/useAnimeEpisodes';
+import { EPISODES_PAGE_SIZE } from '../../constants/animeDetails.constants';
+import { ANIME_EPISODE_COLUMNS } from '../../constants/animeEpisodeColumns.constants';
+
+import Card from '../../../../shared/components/atoms/Card/Card';
+import DataTable from '../../../../shared/components/organisms/DataTable/DataTable';
+import RequestBoundary from '../../../../shared/components/molecules/RequestBoundary/RequestBoundary';
+import PagePaginator from '../../../../shared/components/molecules/PagePaginator/PagePaginator';
 
 import './AnimeEpisodes.css';
-import { EPISODES_PAGE_SIZE } from "../../constants/animeDetails.constants.ts";
+import { FIRST_PAGE } from "../../../../shared/constants/pagination.constants.ts";
 
 interface AnimeEpisodesProps {
     animeId: string;
 }
 
-const FIRST_PAGE = 1
 
 export default function AnimeEpisodes({ animeId }: AnimeEpisodesProps) {
     const [page, setPage] = useState(FIRST_PAGE);
@@ -23,7 +27,12 @@ export default function AnimeEpisodes({ animeId }: AnimeEpisodesProps) {
     } = useAnimeEpisodes(animeId, page);
 
     return (
-        <section className="anime-episodes" aria-label="Список серій">
+        <Card
+            as="section"
+            padding="lg"
+            className="anime-episodes"
+            aria-label="Список серій"
+        >
             <h2>Серії</h2>
 
             <RequestBoundary
@@ -33,53 +42,27 @@ export default function AnimeEpisodes({ animeId }: AnimeEpisodesProps) {
                 errorTitle="Не вдалося завантажити серії"
                 emptyMessage="Інформація про серії відсутня."
             >
-                <div className="anime-episodes-table-wrapper">
-                    <table className="anime-episodes-table">
-                        <caption className="anime-episodes-caption">
-                            Серії — сторінка {page}
-                        </caption>
-
-                        <thead>
-                        <tr>
-                            <th scope="col">№</th>
-                            <th scope="col">Назва</th>
-                            <th scope="col">Тривалість</th>
-                            <th scope="col">Дата виходу</th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-                        {episodes.map(episode => (
-                            <tr key={episode.id}>
-                                <td>{episode.number ?? '—'}</td>
-
-                                <td>
-                                    {episode.title ?? 'Назва відсутня'}
-                                </td>
-
-                                <td>
-                                    {episode.length !== null
-                                        ? `${episode.length} хв`
-                                        : 'Немає даних'}
-                                </td>
-
-                                <td>
-                                    {episode.airdate ?? 'Немає даних'}
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
+                <DataTable
+                    data={episodes}
+                    columns={ANIME_EPISODE_COLUMNS}
+                    getRowKey={episode => episode.id}
+                    caption={`Серії — сторінка ${page}`}
+                    striped
+                />
             </RequestBoundary>
 
             <PagePaginator
                 page={page}
                 onChange={setPage}
-                totalItems={request.status === 'success' ? totalEpisodes : 0}
+                totalItems={
+                    request.status === 'success'
+                        ? totalEpisodes
+                        : 0
+                }
                 pageSize={EPISODES_PAGE_SIZE}
+                disabled={request.status !== 'success'}
                 label="Сторінки списку серій"
             />
-        </section>
+        </Card>
     );
 }

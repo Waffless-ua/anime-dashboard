@@ -8,8 +8,8 @@ import AnimeSortDirection from '../../../../features/anime/components/AnimeSorti
 
 import FavoriteButton from '../../../../features/favorites/components/FavoriteButton/FavoriteButton';
 
-import RequestBoundary from '../../../../shared/components/ui/RequestBoundary/RequestBoundary';
-import PagePaginator from '../../../../shared/components/ui/PagePaginator/PagePaginator';
+import RequestBoundary from '../../../../shared/components/molecules/RequestBoundary/RequestBoundary';
+import PagePaginator from '../../../../shared/components/molecules/PagePaginator/PagePaginator';
 
 import './AnimeListPage.css';
 
@@ -17,12 +17,14 @@ export default function AnimeListPage() {
     const {
         debouncedQuery,
         page,
+        isPending,
         changePage,
     } = useAnimeFilters();
 
     const { request, anime, totalAnime } = useAnime(
         debouncedQuery,
-        page
+        page,
+        isPending
     );
 
     return (
@@ -60,6 +62,7 @@ export default function AnimeListPage() {
                 onChange={changePage}
                 totalItems={totalAnime}
                 pageSize={debouncedQuery.limit}
+                disabled={isPending || request.status !== 'success'}
                 label="Сторінки списку аніме"
             />
         </section>

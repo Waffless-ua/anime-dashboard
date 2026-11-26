@@ -8,20 +8,34 @@ export function isRecord(
     );
 }
 
-export function getNullableText(value: unknown): string | null {
-    return typeof value === 'string' && value.trim()
-        ? value.trim()
-        : null;
+export function getNullableText(
+    value: unknown
+): string | null {
+    if (typeof value !== 'string') {
+        return null;
+    }
+
+    const text = value.trim();
+
+    if (!text) {
+        return null;
+    }
+
+    return text;
 }
 
-export function getPositiveNumber(value: unknown): number | null {
+export function getPositiveNumber(
+    value: unknown
+): number | null {
     if (typeof value !== 'number' && typeof value !== 'string') {
         return null;
     }
 
     const number = Number(value);
 
-    return Number.isFinite(number) && number > 0
-        ? number
-        : null;
+    if (!Number.isFinite(number) || number <= 0) {
+        return null;
+    }
+
+    return number;
 }

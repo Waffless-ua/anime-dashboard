@@ -1,12 +1,5 @@
 import type { Anime } from '../types/anime.types';
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-    return (
-        typeof value === 'object' &&
-        value !== null &&
-        !Array.isArray(value)
-    );
-}
+import { isRecord } from './apiValues';
 
 function isNullableString(value: unknown): value is string | null {
     return value === null || typeof value === 'string';

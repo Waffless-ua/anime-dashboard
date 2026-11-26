@@ -1,39 +1,34 @@
-.layout {
-    --layout-header-height: 5rem;
-}
-
 .layout-header {
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: var(--z-index-header);
 
-    box-sizing: border-box;
     height: var(--layout-header-height);
 
     background-color: var(--secondary-color);
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: var(--border-width) solid var(--border-color);
 
     transition:
-            background-color var(--theme-duration) ease,
-            border-color var(--theme-duration) ease;
+            background-color var(--motion-theme) ease,
+            border-color var(--motion-theme) ease;
 }
 
 .layout-header-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 2rem;
+    gap: var(--space-8);
 
-    box-sizing: border-box;
     width: 100%;
     height: 100%;
-    padding: 1rem 2rem;
+    padding: var(--space-4) var(--space-8);
 }
 
 .layout-header h1 {
     flex-shrink: 0;
     margin: 0;
-    font-size: 1.5rem;
+
+    font-size: var(--font-size-title);
 }
 
 .layout-header-content > button {
@@ -56,12 +51,12 @@
 
     .layout-header-content {
         flex-wrap: wrap;
-        gap: 1rem;
-        padding: 1rem;
+        gap: var(--space-4);
+        padding: var(--space-4);
     }
 
     .layout-header h1 {
         flex: 1;
-        font-size: 1.25rem;
+        font-size: var(--font-size-heading);
     }
 }

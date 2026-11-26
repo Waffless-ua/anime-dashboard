@@ -1,28 +1,64 @@
 import { fetchAnime } from './animeApi';
+
+import { KPI_QUERY_LIMIT } from '../constants/anime.constants';
+
+import type { Anime } from '../types/anime.types';
 import type { AnimeQuery } from '../types/animeApi.types';
+import type { AnimeSortField } from '../types/animeFilters.types';
 
 type AnimeFilter = AnimeQuery['filter'];
 
-export async function fetchAnimeTotal(filter: AnimeFilter, signal: AbortSignal) {
+async function fetchLeadingAnime(
+    filter: AnimeFilter,
+    sort: AnimeSortField,
+    signal: AbortSignal
+): Promise<Anime | null> {
     const result = await fetchAnime(
-        {filter, limit: 1,},
+        {
+            filter,
+            sort,
+            direction: 'asc',
+            limit: KPI_QUERY_LIMIT,
+        },
         signal
     );
+
+    return result.anime[0] ?? null;
+}
+
+export async function fetchAnimeTotal(
+    filter: AnimeFilter,
+    signal: AbortSignal
+): Promise<number> {
+    const result = await fetchAnime(
+        {
+            filter,
+            limit: KPI_QUERY_LIMIT,
+        },
+        signal
+    );
+
     return result.totalAnime;
 }
 
-export async function fetchTopRatedAnime(filter: AnimeFilter, signal: AbortSignal) {
-    const result = await fetchAnime(
-        {filter, sort: 'ratingRank', direction: 'asc', limit: 1,},
+export function fetchTopRatedAnime(
+    filter: AnimeFilter,
+    signal: AbortSignal
+): Promise<Anime | null> {
+    return fetchLeadingAnime(
+        filter,
+        'ratingRank',
         signal
     );
-    return result.anime[0] ?? null;
 }
 
-export async function fetchMostPopularAnime(filter: AnimeFilter, signal: AbortSignal) {
-    const result = await fetchAnime(
-        {filter, sort: 'popularityRank', direction: 'asc', limit: 1,},
+export function fetchMostPopularAnime(
+    filter: AnimeFilter,
+    signal: AbortSignal
+): Promise<Anime | null> {
+    return fetchLeadingAnime(
+        filter,
+        'popularityRank',
         signal
     );
-    return result.anime[0] ?? null;
 }

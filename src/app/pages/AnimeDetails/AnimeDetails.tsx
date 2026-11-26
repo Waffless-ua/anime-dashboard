@@ -1,12 +1,13 @@
+import Card from '../../../shared/components/atoms/Card/Card';
 import { useNavigate, useParams } from 'react-router';
 
 import AnimeEpisodes from '../../../features/anime/components/AnimeEpisodes/AnimeEpisodes';
 import { ANIME_DETAIL_FACTS } from '../../../features/anime/constants/animeDetails.constants';
 import { useAnimeDetails } from '../../../features/anime/hooks/useAnimeDetails';
-import RequestBoundary from '../../../shared/components/ui/RequestBoundary/RequestBoundary';
+import RequestBoundary from '../../../shared/components/molecules/RequestBoundary/RequestBoundary';
 
 import './AnimeDetails.css';
-import Button from "../../../shared/components/ui/Button/Button.tsx";
+import Button from "../../../shared/components/atoms/Button/Button.tsx";
 import FavoriteButton from "../../../features/favorites/components/FavoriteButton/FavoriteButton.tsx";
 
 export default function AnimeDetails() {
@@ -34,7 +35,7 @@ export default function AnimeDetails() {
             >
                 {anime && (
                     <>
-                        <article className="anime-details">
+                        <Card as="article" padding="lg" className="anime-details">
                             <div className="anime-details-media">
                                 {anime.attributes.posterImage?.small && (
                                     <img
@@ -64,7 +65,7 @@ export default function AnimeDetails() {
                                     <p>{anime.details.synopsis ?? 'Опис відсутній.'}</p>
                                 </section>
                             </div>
-                        </article>
+                        </Card>
 
                         <AnimeEpisodes animeId={anime.id} />
                     </>

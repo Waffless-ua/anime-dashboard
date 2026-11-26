@@ -9,6 +9,11 @@ export const ANIME_KPI_STORAGE_KEY = 'anime-kpi-snapshot';
 export const DEFAULT_ANIME_SORT: AnimeSortField = 'popularityRank';
 export const DEFAULT_SORT_DIRECTION: SortDirection = 'asc';
 
+export const KPI_QUERY_LIMIT = 1;
+export const KPI_RATING_PRECISION = 2;
+export const FUTURE_ANIME_YEARS = 1;
+
+
 export const DIRECTION_OPTIONS: readonly SelectOption<SortDirection>[] = [
     { value: 'asc', label: 'За зростанням' },
     { value: 'desc', label: 'За спаданням' },
@@ -51,7 +56,8 @@ export const ANIME_SUBTYPE_OPTIONS: readonly SelectOption[] = [
 
 
 export const FIRST_ANIME_YEAR = 1900;
-export const LAST_ANIME_YEAR = new Date().getFullYear() + 1;
+
+export const LAST_ANIME_YEAR = new Date().getFullYear() + FUTURE_ANIME_YEARS;
 
 export const DEFAULT_ANIME_FILTERS: AnimeFilters = {
     filter: {

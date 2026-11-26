@@ -1,53 +1,26 @@
 import { useCallback } from 'react';
 
-import { useAppSelector } from '../../../app/hooks';
-import { useDebounce } from '../../../shared/hooks/useDebounce';
 import { useAsyncResource } from '../../../shared/hooks/useAsyncResource';
 
-import type { RequestState } from '../../../shared/types/async.types';
-
-import { selectAnimeFilters } from '../store/animeQuerySlice';
 import { fetchAnimeStatusDistribution } from '../api/animeChartApi';
+import type { AnimeFilterValues } from '../types/animeFilters.types';
 
-export function useAnimeChart() {
-    const filter = useAppSelector(
-        state => selectAnimeFilters(state).filter
-    );
-
-    const debouncedFilter = useDebounce(filter);
-
+export function useAnimeChart(
+    filter: AnimeFilterValues,
+    isPending: boolean
+) {
     const loadChart = useCallback(
-        async (signal: AbortSignal) => ({
-            filter: debouncedFilter,
-            points: await fetchAnimeStatusDistribution(
-                debouncedFilter,
-                signal
-            ),
-        }),
-        [debouncedFilter]
+        (signal: AbortSignal) =>
+            fetchAnimeStatusDistribution(filter, signal),
+        [filter]
     );
 
-    const { data, ...resource } = useAsyncResource(loadChart);
-
-    const isCurrent = data?.filter === debouncedFilter;
-
-    const isPending =
-        filter !== debouncedFilter ||
-        (resource.status === 'success' && !isCurrent);
-
-    const request: RequestState = isPending
-        ? {
-            ...resource,
-            status: 'loading',
-            loading: true,
-            error: null,
-        }
-        : resource;
+    const { data, ...request } = useAsyncResource(
+        isPending ? null : loadChart
+    );
 
     return {
-        points: data && isCurrent && !isPending
-            ? data.points
-            : [],
+        points: data ?? [],
         request,
     };
 }

@@ -3,7 +3,6 @@ import { useDebounce } from '../../../shared/hooks/useDebounce';
 
 import {
     changePage as changePageAction,
-    resetFilters as resetFiltersAction,
     selectAnimeFilters,
     selectAnimePage,
 } from '../store/animeQuerySlice';
@@ -14,20 +13,22 @@ export function useAnimeFilters() {
     const filters = useAppSelector(selectAnimeFilters);
     const page = useAppSelector(selectAnimePage);
 
-    const debouncedQuery = useDebounce(filters, 400);
+    const debouncedQuery = useDebounce(filters);
+
+    const isPending = filters !== debouncedQuery;
 
     function changePage(page: number) {
-        dispatch(changePageAction(page));
-    }
+        if (isPending) {
+            return;
+        }
 
-    function resetFilters() {
-        dispatch(resetFiltersAction());
+        dispatch(changePageAction(page));
     }
 
     return {
         debouncedQuery,
         page,
+        isPending,
         changePage,
-        resetFilters,
     };
 }

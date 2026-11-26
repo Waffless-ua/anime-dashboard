@@ -1,6 +1,7 @@
-import type { Anime } from '../types/anime.types.ts';
-import type { AnimeKpiSnapshot } from '../types/animeKpi.types.ts';
-import getRatingAnime from '../utils/getRatingAnime.ts';
+import type { Anime } from '../types/anime.types';
+import type { AnimeKpiSnapshot } from '../types/animeKpi.types';
+
+import getRatingAnime from '../utils/getRatingAnime';
 
 export function createAnimeKpiSnapshot(
     totalAnime: number,
@@ -14,6 +15,5 @@ export function createAnimeKpiSnapshot(
         topRatedRating: topRated
             ? getRatingAnime(topRated)
             : null,
-        savedAt: new Date().toISOString(),
     };
 }

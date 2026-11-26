@@ -1,30 +1,23 @@
-import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
-import {
-    changeFilter,
-    selectAnimeFilters,
-} from '../../store/animeQuerySlice';
+import Input from '../../../../shared/components/atoms/Input/Input';
+import FormField from '../../../../shared/components/molecules/FormField/FormField';
 
 import './AnimeFilters.css';
+import { useAnimeFilter } from "../../hooks/useAnimeFilter.ts";
 
 export default function AnimeSearchFilter() {
-    const dispatch = useAppDispatch();
-    const text = useAppSelector(
-        state => selectAnimeFilters(state).filter.text
-    );
-
-    function changeText(value: string) {
-        dispatch(changeFilter({ name: 'text', value }));
-    }
+    const { value, onChange } = useAnimeFilter('text');
 
     return (
-        <div className="anime-filter-field">
-            <input
-                value={text}
-                onChange={event => changeText(event.currentTarget.value)}
+        <FormField label="Пошук аніме за назвою" hideLabel className="anime-filter-field">
+            {controlProps => (
+            <Input
+                {...controlProps}
+                value={value}
+                onChange={event => onChange(event.currentTarget.value)}
                 type="search"
-                aria-label="Пошук аніме за назвою"
                 placeholder="Введіть назву аніме"
             />
-        </div>
+            )}
+        </FormField>
     );
 }

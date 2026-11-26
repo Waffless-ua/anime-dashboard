@@ -9,7 +9,8 @@ import AnimeSubtypeFilter from '../../../features/anime/components/AnimeFilters/
 import AnimeSeasonFilter from '../../../features/anime/components/AnimeFilters/AnimeSeasonFilter';
 import AnimePageSizeFilter from '../../../features/anime/components/AnimeFilters/AnimePageSizeFilter';
 
-import Button from '../../../shared/components/ui/Button/Button';
+import Button from '../../../shared/components/atoms/Button/Button';
+import Card from '../../../shared/components/atoms/Card/Card';
 
 import './DashboardLayout.css';
 
@@ -24,10 +25,15 @@ export default function DashboardLayout() {
     return (
         <div className="dashboard-layout">
             <div className="dashboard-content">
-                <aside className="dashboard-filters">
+                <Card
+                    as="aside"
+                    padding="none"
+                    className="dashboard-filters"
+                >
                     <h2 id="filters-heading">Фільтри</h2>
 
-                    <form className="anime-controls-form"
+                    <form
+                        className="anime-controls-form"
                         onSubmit={event => event.preventDefault()}
                     >
                         <AnimeStatusFilter />
@@ -36,13 +42,14 @@ export default function DashboardLayout() {
                         <AnimeSeasonFilter />
                         <AnimePageSizeFilter />
 
-                        <Button variant="outline"
+                        <Button
+                            variant="outline"
                             onClick={() => dispatch(resetFilters())}
                         >
                             Скинути фільтри
                         </Button>
                     </form>
-                </aside>
+                </Card>
 
                 <main className="dashboard-main">
                     <nav
@@ -65,9 +72,12 @@ export default function DashboardLayout() {
                         ))}
                     </nav>
 
-                    <div className="dashboard-tab-content">
+                    <Card
+                        padding="none"
+                        className="dashboard-tab-content"
+                    >
                         <Outlet />
-                    </div>
+                    </Card>
                 </main>
             </div>
         </div>

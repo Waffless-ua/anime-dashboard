@@ -1,0 +1,6 @@
+.shared-spinner { display: inline-block; flex-shrink: 0; border: var(--spinner-border-width) solid var(--border-color); border-top-color: var(--focus-color); border-radius: var(--radius-round); animation: shared-spin var(--spinner-duration) linear infinite; }
+.shared-spinner--sm { width: var(--spinner-sm); height: var(--spinner-sm); }
+.shared-spinner--md { width: var(--spinner-md); height: var(--spinner-md); }
+.shared-spinner--lg { width: var(--spinner-lg); height: var(--spinner-lg); }
+@keyframes shared-spin { to { transform: rotate(1turn); } }
+@media (prefers-reduced-motion: reduce) { .shared-spinner { animation: none; } }

@@ -1,6 +1,6 @@
 import { useTheme } from '../../hooks/useTheme';
 
-import Button from '../../../../shared/components/ui/Button/Button';
+import Button from '../../../../shared/components/atoms/Button/Button';
 
 export default function ThemeToggle() {
     const { isDark, toggleTheme } = useTheme();

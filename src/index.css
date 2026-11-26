@@ -1,37 +1,4 @@
-:root {
-  --bg-color: #f3f4f6;
-  --text-color: #1f2937;
-
-  --primary-color: #f3f4f6;
-  --primary-hover: #e1e2e3;
-
-  --secondary-color: #ffffff;
-  --secondary-hover: #f4f4f4;
-
-  --tertiary-color: #f9fafb;
-  --tertiary-hover: #f3f4f6;
-
-  --border-color: #e5e7eb;
-
-  --success-color: #10b981;
-  --danger-color: #ef4444;
-}
-
-[data-theme='dark'] {
-  --bg-color: #111827;
-  --text-color: #f9fafb;
-
-  --primary-color: #111827;
-  --primary-hover: #1c263e;
-
-  --secondary-color: #1f2937;
-  --secondary-hover: #2b384c;
-
-  --tertiary-color: #273449;
-  --tertiary-hover: #334155;
-
-  --border-color: #374151;
-}
+@import './shared/styles/tokens.css';
 
 * {
   box-sizing: border-box;
@@ -40,8 +7,12 @@
 }
 
 body {
-  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: var(--font-family-base), sans-serif;
+
   background-color: var(--bg-color);
   color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
+
+  transition:
+          background-color var(--motion-theme) ease,
+          color var(--motion-theme) ease;
 }

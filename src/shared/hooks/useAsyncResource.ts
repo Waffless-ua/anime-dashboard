@@ -1,34 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { getErrorMessage } from '../utils/getErrorMessage';
-import type { AsyncResource, AsyncState } from '../types/async.types';
 
-interface AsyncResourceOptions {
-    keepPreviousData?: boolean;
+import type {
+    AsyncResource,
+    AsyncState,
+} from '../types/async.types';
+
+type ResourceLoader<T> = (signal: AbortSignal) => Promise<T>;
+
+interface CompletedRequest<T> {
+    load: ResourceLoader<T>;
+    reloadCount: number;
+    state: AsyncState<T>;
 }
 
 export function useAsyncResource<T>(
-    load: (signal: AbortSignal) => Promise<T>,
-    { keepPreviousData = false }: AsyncResourceOptions = {}
+    load: ResourceLoader<T> | null
 ): AsyncResource<T> {
-    const [request, setRequest] = useState<AsyncState<T>>({
-        status: 'loading',
-        data: null,
-        error: null,
-    });
+    const [completed, setCompleted] =
+        useState<CompletedRequest<T> | null>(null);
 
     const [reloadCount, setReloadCount] = useState(0);
 
     useEffect(() => {
+        if (load === null) {
+            return;
+        }
+
         const controller = new AbortController();
 
-        setRequest(previous => ({
-            status: 'loading',
-            data: keepPreviousData ? previous.data : null,
-            error: null,
-        }));
-
-        async function loadResource() {
+        const loadResource = async () => {
             try {
                 const data = await load(controller.signal);
 
@@ -36,38 +38,60 @@ export function useAsyncResource<T>(
                     return;
                 }
 
-                setRequest({
-                    status: 'success',
-                    data,
-                    error: null,
+                setCompleted({
+                    load,
+                    reloadCount,
+                    state: {
+                        status: 'success',
+                        data,
+                        error: null,
+                    },
                 });
             } catch (error) {
                 if (controller.signal.aborted) {
                     return;
                 }
 
-                setRequest(previous => ({
-                    status: 'error',
-                    data: keepPreviousData ? previous.data : null,
-                    error: getErrorMessage(error),
-                }));
+                setCompleted({
+                    load,
+                    reloadCount,
+                    state: {
+                        status: 'error',
+                        data: null,
+                        error: getErrorMessage(error),
+                    },
+                });
             }
-        }
+        };
 
         void loadResource();
 
         return () => {
             controller.abort();
         };
-    }, [load, reloadCount, keepPreviousData]);
+    }, [load, reloadCount]);
 
-    function reload() {
+    const reload = useCallback(() => {
         setReloadCount(previous => previous + 1);
+    }, []);
+
+    const isCurrent =
+        load !== null &&
+        completed !== null &&
+        completed.load === load &&
+        completed.reloadCount === reloadCount;
+
+    if (isCurrent) {
+        return {
+            ...completed.state,
+            reload,
+        };
     }
 
     return {
-        ...request,
-        loading: request.status === 'loading',
+        status: 'loading',
+        data: null,
+        error: null,
         reload,
     };
 }
